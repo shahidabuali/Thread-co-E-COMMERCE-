@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Admin Panel – THREAD CO.</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png"/>
+<link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png"/>
+<link rel="shortcut icon" href="favicon.ico"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="emailservice.js"></script>
+<script>
+(function(){
+  var saved=localStorage.getItem('tc_theme')||'light';
+  document.documentElement.setAttribute('data-theme',saved);
+})();
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --plum:#5f0f40;--plum-light:#7a2f5a;--plum-pale:#9c4d78;
+  --accent-soft:rgba(95,15,64,.08);--accent-glow:rgba(95,15,64,.2);
+  --bg:#faf9f8;--bg-elevated:#ffffff;--bg-sunken:#f3eef1;--bg-hero:#1a0e16;
+  --text:#1a1015;--text-muted:#4a4147;--text-faint:#6b6268;
+  --border:#e3dadf;--border-strong:#cdc0c7;
+  --card-shadow:0 1px 3px rgba(20,10,16,.05);
+  --toggle-bg:#1a1015;--toggle-icon:#9c4d78;
+  --green:#3f6b48;--blue:#2f4d7a;
+}
+[data-theme="dark"]{
+  --bg:#150d12;--bg-elevated:#1e1318;--bg-sunken:#0e090c;--bg-hero:#0a0508;
+  --text:#f5f1f3;--text-muted:#c4b9c0;--text-faint:#8e8389;
+  --border:#2a1f25;--border-strong:#3e313a;
+  --card-shadow:0 1px 3px rgba(0,0,0,.3);
+  --toggle-bg:#9c4d78;--toggle-icon:#150d12;
+  --green:#7fb98c;--blue:#8caee0;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;transition:background .3s,color .3s;position:relative}
+a{text-decoration:none;color:inherit}
+button,select,input{cursor:pointer;font-family:inherit;border:none;background:none}
+input{cursor:text}
+::selection{background:var(--plum);color:#fff}
+
+#site-bg-anim{position:fixed;inset:0;z-index:-1;overflow:hidden;background:var(--bg);transition:background .3s}
+#site-bg-anim svg{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:min(900px,90vw);height:auto;opacity:.14}
+[data-theme="dark"] #site-bg-anim svg{opacity:.18}
+#figure path,#figure circle{stroke:var(--plum);stroke-width:1.5;stroke-opacity:.3}
+.dress-layer{opacity:0;transition:opacity 1.2s ease}.dress-layer.on{opacity:1}
+
+#page-loader{position:fixed;inset:0;z-index:10000;background:var(--bg);display:flex;align-items:center;justify-content:center;transition:opacity .45s,visibility .45s}
+#page-loader.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loader-mark{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--plum),var(--plum-light));display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:17px;animation:loaderFade 1.6s ease-in-out infinite;margin-bottom:14px}
+@keyframes loaderFade{0%,100%{opacity:1}50%{opacity:.5}}
+.loader-bar{width:110px;height:2px;background:var(--border);border-radius:2px;overflow:hidden;position:relative}
+.loader-bar::after{content:'';position:absolute;inset:0;width:35%;background:var(--plum);border-radius:2px;animation:loaderSlide 1.3s ease-in-out infinite}
+@keyframes loaderSlide{0%{transform:translateX(-100%)}100%{transform:translateX(330%)}}
+
+.theme-toggle{position:relative;width:46px;height:25px;border-radius:13px;background:var(--toggle-bg);cursor:pointer;flex-shrink:0;transition:background .3s;display:flex;align-items:center;padding:3px}
+.theme-toggle-knob{width:19px;height:19px;border-radius:50%;background:var(--toggle-icon);display:flex;align-items:center;justify-content:center;font-size:9px;transition:transform .3s;transform:translateX(0)}
+[data-theme="dark"] .theme-toggle-knob{transform:translateX(21px)}
+
+/* ADMIN NAV */
+.admin-nav{height:56px;background:var(--bg-hero);display:flex;align-items:center;padding:0 24px;position:sticky;top:0;z-index:500;border-bottom:1px solid rgba(255,255,255,.07)}
+.admin-brand{display:flex;align-items:center;gap:9px}
+.admin-mark{width:28px;height:28px;background:linear-gradient(135deg,var(--plum),var(--plum-light));border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:11px}
+.admin-brand-name{color:#f7f3f5;font-weight:700;font-size:13px;letter-spacing:2px}
+.admin-chip{background:rgba(95,15,64,.3);color:var(--plum-pale);font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;letter-spacing:.4px;margin-left:4px}
+.admin-nav-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.admin-user{font-size:12px;color:rgba(247,243,245,.45)}
+.nav-btn{background:rgba(247,243,245,.08);border-radius:6px;color:rgba(247,243,245,.7);font-size:12px;font-weight:600;padding:6px 13px;transition:all .15s}
+.nav-btn:hover{background:rgba(247,243,245,.15);color:#fff}
+.nav-btn.danger{color:#cf8585}
+
+/* LAYOUT */
+.admin-layout{display:flex;min-height:calc(100vh - 56px);position:relative;z-index:1}
+.admin-sidebar{width:206px;background:var(--bg-elevated);border-right:1px solid var(--border);padding:16px 12px;flex-shrink:0}
+.s-label{font-size:10px;font-weight:700;color:var(--text-faint);text-transform:uppercase;letter-spacing:.7px;padding:6px 12px;margin-bottom:2px}
+.s-btn{display:flex;align-items:center;gap:9px;width:100%;padding:9px 12px;border-radius:9px;font-size:13px;font-weight:500;transition:all .15s;color:var(--text-muted);margin-bottom:2px;text-align:left}
+.s-btn:hover{background:var(--bg-sunken)}
+.s-btn.active{background:var(--accent-soft);color:var(--plum);font-weight:700}
+.admin-main{flex:1;padding:26px;overflow:auto}
+.page-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;color:var(--text)}
+
+/* STAT CARDS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat-card{background:var(--bg-elevated);border-radius:14px;padding:18px 16px;border:1px solid var(--border);position:relative;overflow:hidden}
+.stat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--plum)}
+.stat-icon{font-size:22px;margin-bottom:9px}
+.stat-val{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:3px;color:var(--text)}
+.stat-label{font-size:11px;color:var(--text-faint);margin-bottom:4px}
+.stat-change{font-size:11px;font-weight:700;color:var(--green)}
+
+/* CHART */
+.chart-card{background:var(--bg-elevated);border-radius:14px;padding:22px;border:1px solid var(--border);margin-bottom:20px}
+.chart-head{font-weight:700;font-size:14px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;color:var(--text)}
+.chart-bars{display:flex;align-items:flex-end;gap:10px;height:120px;padding-bottom:4px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px}
+.bar-fill{width:100%;background:linear-gradient(180deg,var(--plum-pale),var(--plum));border-radius:5px 5px 0 0;transition:height .6s ease;cursor:pointer;position:relative;min-height:4px}
+.bar-fill:hover{filter:brightness(1.15)}
+.bar-fill::after{content:attr(data-tip);position:absolute;top:-26px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);font-size:10px;padding:3px 7px;border-radius:5px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s}
+.bar-fill:hover::after{opacity:1}
+.bar-label{font-size:10px;color:var(--text-faint);font-weight:600}
+
+/* TABLES */
+.table-card{background:var(--bg-elevated);border-radius:14px;border:1px solid var(--border);overflow:hidden;margin-bottom:20px}
+.table-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.table-title{font-weight:700;font-size:14px;color:var(--text)}
+.dt{width:100%;border-collapse:collapse;font-size:13px}
+.dt th{padding:10px 16px;text-align:left;font-size:10px;color:var(--text-faint);font-weight:700;text-transform:uppercase;letter-spacing:.5px;background:var(--bg-sunken);border-bottom:1px solid var(--border)}
+.dt td{padding:12px 16px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--text)}
+.dt tr:last-child td{border-bottom:none}
+.dt tr:hover td{background:var(--bg-sunken)}
+.pill{font-size:10px;font-weight:700;padding:4px 9px;border-radius:7px}
+.p-Processing{background:#fdf3e7;color:#8a5a1e}
+.p-Shipped{background:#e3eaf3;color:#2f4d7a}
+.p-Delivered{background:#e3eee0;color:#3f6b48}
+.p-Cancelled{background:#fae6e3;color:#8a3838}
+[data-theme="dark"] .p-Processing{background:#2e2110;color:#dba269}
+[data-theme="dark"] .p-Shipped{background:#16213a;color:#8caee0}
+[data-theme="dark"] .p-Delivered{background:#1a2c1c;color:#7fb98c}
+[data-theme="dark"] .p-Cancelled{background:#2c1816;color:#cf8585}
+
+/* ACTION BUTTONS */
+.ab{font-size:11px;font-weight:700;padding:5px 10px;border-radius:6px;margin-right:4px;transition:all .15s;cursor:pointer;border:none}
+.ab-edit{background:#e3eaf3;color:#2f4d7a}
+.ab-del{background:#fae6e3;color:#8a3838}
+.ab-view{background:var(--bg-sunken);color:var(--text-muted)}
+.ab-tog{background:#e3eee0;color:#3f6b48}
+[data-theme="dark"] .ab-edit{background:#16213a;color:#8caee0}
+[data-theme="dark"] .ab-del{background:#2c1816;color:#cf8585}
+[data-theme="dark"] .ab-tog{background:#1a2c1c;color:#7fb98c}
+
+/* FORM */
+.form-card{background:var(--accent-soft);border:2px solid rgba(95,15,64,.25);border-radius:14px;padding:20px;margin-bottom:20px}
+.form-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:14px}
+.ff{display:flex;flex-direction:column;gap:5px}
+.ff label{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.4px}
+.ff input,.ff select{padding:9px 12px;border-radius:8px;border:1.4px solid var(--border);font-size:13px;outline:none;background:var(--bg-elevated);color:var(--text);transition:border-color .2s}
+.ff input:focus,.ff select:focus{border-color:var(--plum)}
+.badge{display:inline-block;font-size:9px;font-weight:700;padding:3px 7px;border-radius:5px;text-transform:uppercase}
+.b-Hot{background:#f0dde9;color:#7a2c5c}.b-New{background:#dde8dd;color:#3f6b48}.b-Sale{background:#fae6e3;color:#8a3838}
+
+/* BUTTONS */
+.btn-p{background:var(--plum);border-radius:9px;color:#fff;font-weight:700;font-size:13px;padding:9px 17px;transition:opacity .15s;border:none;cursor:pointer}
+.btn-p:hover{opacity:.9}
+.btn-s{background:var(--bg-elevated);border:1.4px solid var(--border);border-radius:9px;color:var(--text);font-weight:600;font-size:13px;padding:9px 15px;transition:border-color .15s;cursor:pointer}
+.btn-s:hover{border-color:var(--border-strong)}
+
+/* SEARCH */
+.toolbar{display:flex;align-items:center;gap:9px}
+.srch{padding:8px 12px;border-radius:8px;border:1.4px solid var(--border);font-size:12px;outline:none;width:190px;background:var(--bg-elevated);color:var(--text)}
+.srch:focus{border-color:var(--plum)}
+.sl{padding:8px 12px;border-radius:8px;border:1.4px solid var(--border);font-size:12px;background:var(--bg-elevated);color:var(--text)}
+
+/* 2FA MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9998;display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+.modal-overlay.show{display:flex}
+.modal-box{background:var(--bg-elevated);border-radius:20px;padding:36px;width:380px;max-width:92vw;box-shadow:0 24px 60px rgba(0,0,0,.3);text-align:center}
+.modal-icon{width:60px;height:60px;border-radius:16px;background:linear-gradient(135deg,var(--plum),var(--plum-light));display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 18px}
+.modal-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:7px;color:var(--text)}
+.modal-sub{font-size:12px;color:var(--text-muted);margin-bottom:20px;line-height:1.6}
+.email-status{border-radius:10px;padding:10px 13px;font-size:12px;margin-bottom:14px;display:flex;align-items:flex-start;gap:8px;line-height:1.5;text-align:left}
+.email-status.sending{background:#fdf3e7;border:1px solid #e8c08c;color:#8a5a1e}
+.email-status.sent{background:#e9f3e7;border:1px solid #a8cba0;color:#3f6b48}
+.email-status.failed{background:#fae6e3;border:1px solid #d99186;color:#8a3838}
+[data-theme="dark"] .email-status.sending{background:#2e2110;color:#dba269}
+[data-theme="dark"] .email-status.sent{background:#1a2c1c;color:#7fb98c}
+[data-theme="dark"] .email-status.failed{background:#2c1816;color:#cf8585}
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(0,0,0,.15);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+.spinner.light{border-color:rgba(255,255,255,.35);border-top-color:#fff}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tfa-inputs{display:flex;gap:8px;justify-content:center;margin-bottom:9px}
+.tfa-inp{width:42px;height:50px;text-align:center;font-size:20px;font-weight:700;border:1.8px solid var(--border);border-radius:10px;outline:none;background:var(--bg-elevated);color:var(--text);transition:border-color .2s;cursor:text}
+.tfa-inp:focus,.tfa-inp.filled{border-color:var(--plum)}
+.tfa-inp.filled{background:var(--accent-soft)}
+.tfa-err{font-size:11px;color:#b1493f;font-weight:600;margin-bottom:10px;min-height:16px}
+.btn-verify{width:100%;padding:13px;background:var(--plum);border-radius:11px;color:#fff;font-weight:700;font-size:15px;margin-bottom:11px;transition:opacity .2s;border:none;cursor:pointer}
+.btn-verify:hover{opacity:.9}
+.resend-link{color:var(--plum);font-weight:700;font-size:11px;background:none;border:none;cursor:pointer}
+.modal-cancel{margin-top:9px;color:var(--text-faint);font-size:11px;background:none;border:none;cursor:pointer;display:block;width:100%}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+
+.toast{position:fixed;bottom:22px;right:22px;z-index:9999;padding:12px 19px;border-radius:10px;font-weight:600;font-size:13px;color:#fff;box-shadow:0 8px 22px rgba(0,0,0,.18);transition:opacity .25s,transform .25s;pointer-events:none;transform:translateY(14px);opacity:0}
+.toast.show{transform:translateY(0);opacity:1}
+
+.empty-note{text-align:center;padding:36px;color:var(--text-faint);font-size:13px}
+
+@media(max-width:900px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .form-grid{grid-template-columns:1fr 1fr}
+  .admin-sidebar{display:none}
+}
+</style>
+</head>
+<body>
+
+<div id="site-bg-anim">
+  <svg id="dress-svg" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
+    <g id="figure">
+      <circle cx="200" cy="70" r="32" fill="var(--plum)"/>
+      <path d="M160 110 Q200 100 240 110 L250 280 Q200 295 150 280 Z" fill="var(--plum)"/>
+      <path d="M160 280 L155 480 L185 480 L195 300 Z" fill="var(--plum)"/>
+      <path d="M240 280 L245 480 L215 480 L205 300 Z" fill="var(--plum)"/>
+      <path d="M160 120 L120 220 L140 230 L168 140 Z" fill="var(--plum)"/>
+      <path d="M240 120 L280 220 L260 230 L232 140 Z" fill="var(--plum)"/>
+    </g>
+    <g class="dress-layer" id="layer-jacket">
+      <path d="M150 105 Q200 92 250 105 L262 200 L235 212 L235 290 L165 290 L165 212 L138 200 Z" fill="var(--plum-light)"/>
+      <text x="200" y="250" text-anchor="middle" font-family="DM Sans" font-size="11" font-weight="700" fill="#fff" opacity=".85" letter-spacing="1.5">THREAD CO.</text>
+    </g>
+    <g class="dress-layer" id="layer-shoes">
+      <ellipse cx="168" cy="488" rx="26" ry="11" fill="var(--plum-light)"/>
+      <ellipse cx="232" cy="488" rx="26" ry="11" fill="var(--plum-light)"/>
+      <text x="168" y="491" text-anchor="middle" font-family="DM Sans" font-size="6" font-weight="700" fill="#fff" opacity=".8">TC</text>
+      <text x="232" y="491" text-anchor="middle" font-family="DM Sans" font-size="6" font-weight="700" fill="#fff" opacity=".8">TC</text>
+    </g>
+    <g class="dress-layer" id="layer-accessories">
+      <path d="M168 48 Q200 30 232 48 Q236 60 230 64 L170 64 Q164 60 168 48 Z" fill="var(--plum-light)"/>
+      <rect x="255" y="230" width="38" height="50" rx="8" fill="var(--plum-light)"/>
+      <text x="274" y="259" text-anchor="middle" font-family="DM Sans" font-size="8" font-weight="700" fill="#fff" opacity=".85">TC</text>
+    </g>
+  </svg>
+</div>
+
+<div id="page-loader">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:14px">
+    <div class="loader-mark">TC</div>
+    <div class="loader-bar"></div>
+  </div>
+</div>
+
+<div class="admin-nav">
+  <div class="admin-brand">
+    <div class="admin-mark">TC</div>
+    <span class="admin-brand-name">THREAD CO.</span>
+    <span class="admin-chip">ADMIN</span>
+  </div>
+  <div class="admin-nav-right">
+    <span class="admin-user" id="admin-user-label"></span>
+    <button class="theme-toggle" id="theme-toggle" title="Toggle theme" aria-label="Toggle theme">
+      <span class="theme-toggle-knob" id="theme-knob">☀️</span>
+    </button>
+    <button class="nav-btn" onclick="location.href='index.html'">← View Store</button>
+    <button class="nav-btn" onclick="location.href='dashboard.html'">My Account</button>
+    <button class="nav-btn danger" onclick="signOut()">Sign Out</button>
+  </div>
+</div>
+
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="s-label">Main</div>
+    <button class="s-btn" id="sb-dashboard" onclick="setTab('dashboard')">📊 Dashboard</button>
+    <button class="s-btn" id="sb-products" onclick="setTab('products')">📦 Products</button>
+    <button class="s-btn" id="sb-orders" onclick="setTab('orders')">🛒 Orders</button>
+    <button class="s-btn" id="sb-customers" onclick="setTab('customers')">👥 Customers</button>
+    <button class="s-btn" id="sb-coupons" onclick="setTab('coupons')">🏷️ Coupons</button>
+    <div class="s-label" style="margin-top:16px">Account</div>
+    <button class="s-btn" onclick="reqTFA('Access Settings',()=>showToast('Settings unlocked ✓'))">⚙️ Settings 🔐</button>
+    <button class="s-btn" onclick="location.href='dashboard.html'">👤 My Profile</button>
+  </aside>
+  <main class="admin-main" id="admin-main"></main>
+</div>
+
+<div class="modal-overlay" id="tfa-modal" onclick="if(event.target===this)closeTFA()">
+  <div class="modal-box">
+    <div class="modal-icon">🔐</div>
+    <div class="modal-title" id="tfa-action-title">Verify Admin Action</div>
+    <div class="modal-sub">Every admin action requires identity verification.<br>Code sent to <strong style="color:var(--plum)" id="tfa-email"></strong></div>
+    <div class="email-status sending" id="email-status">
+      <span class="spinner"></span><span id="email-status-text">Sending code…</span>
+    </div>
+    <div class="tfa-inputs" id="tfa-inputs"></div>
+    <div class="tfa-err" id="tfa-err"></div>
+    <button class="btn-verify" id="btn-verify" onclick="verifyTFA()">Verify & Execute →</button>
+    <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px">
+      <button class="resend-link" onclick="resendTFA()">Resend code</button>
+    </div>
+    <button class="modal-cancel" onclick="closeTFA()">Cancel</button>
+  </div>
+</div>
+
+<script>
+/* ════ THEME ════ */
+function tcToggleTheme(){
+  const next=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);
+  localStorage.setItem('tc_theme',next);
+  document.getElementById('theme-knob').textContent=next==='dark'?'🌙':'☀️';
+}
+document.getElementById('theme-toggle').addEventListener('click',tcToggleTheme);
+document.getElementById('theme-knob').textContent=
+  (document.documentElement.getAttribute('data-theme')||'light')==='dark'?'🌙':'☀️';
+
+/* ════ DRESSING ANIMATION ════ */
+function runDressingLoop(){
+  const layers=['layer-jacket','layer-shoes','layer-accessories'];
+  let i=0;
+  function step(){
+    layers.forEach(id=>document.getElementById(id)?.classList.remove('on'));
+    if(i>0)for(let j=0;j<i;j++)document.getElementById(layers[j])?.classList.add('on');
+    i++;if(i>layers.length+1)i=0;
+    setTimeout(step,i===1?700:1400);
+  }
+  step();
+}
+runDressingLoop();
+
+/* ════ DATA ════ */
+const BASE_PRODUCTS=[
+  {id:1,name:"Urban Drift Hoodie",price:89,orig:120,cat:"Men's",badge:"Hot",stock:3},
+  {id:2,name:"Bloom Wrap Dress",price:65,orig:65,cat:"Women's",badge:"New",stock:12},
+  {id:3,name:"Neon Pulse Tee",price:35,orig:50,cat:"Unisex",badge:"Sale",stock:28},
+  {id:4,name:"Cloud Nine Joggers",price:72,orig:72,cat:"Unisex",badge:"New",stock:8},
+  {id:5,name:"Mini Explorer Jacket",price:95,orig:130,cat:"Kids'",badge:"Sale",stock:5},
+  {id:6,name:"Velvet Rush Blazer",price:155,orig:210,cat:"Women's",badge:"Hot",stock:2},
+  {id:7,name:"Grid Street Shorts",price:42,orig:42,cat:"Men's",badge:null,stock:19},
+  {id:8,name:"Arch Cap",price:28,orig:38,cat:"Accessories",badge:"Sale",stock:45},
+  {id:9,name:"Sunrise Crop Top",price:38,orig:38,cat:"Women's",badge:"New",stock:22},
+  {id:10,name:"Track Legacy Set",price:118,orig:160,cat:"Men's",badge:"Hot",stock:7},
+  {id:11,name:"Tiny Threads Dungaree",price:48,orig:48,cat:"Kids'",badge:"New",stock:14},
+  {id:12,name:"Woven Leather Belt",price:32,orig:45,cat:"Accessories",badge:"Sale",stock:31}
+];
+const BASE_CUSTOMERS=[
+  {id:1,name:"Maria Garcia",email:"maria@email.com",joined:"2024-06-10",orders:8,spent:934,status:"VIP"},
+  {id:2,name:"James Wilson",email:"james@email.com",joined:"2024-09-22",orders:3,spent:213,status:"Active"},
+  {id:3,name:"Priya Patel",email:"priya@email.com",joined:"2024-11-01",orders:5,spent:567,status:"Active"},
+  {id:4,name:"Liu Wei",email:"liu@email.com",joined:"2024-12-15",orders:1,spent:89,status:"New"},
+  {id:5,name:"Emma Brown",email:"emma@email.com",joined:"2024-07-30",orders:12,spent:1456,status:"VIP"}
+];
+const MONTHLY=[
+  {m:"Aug",rev:12400,ord:189},{m:"Sep",rev:15800,ord:234},{m:"Oct",rev:19200,ord:298},
+  {m:"Nov",rev:28900,ord:421},{m:"Dec",rev:34500,ord:512},{m:"Jan",rev:22100,ord:334}
+];
+let products=[...BASE_PRODUCTS];
+let coupons=[
+  {id:1,code:"THREAD20",val:20,type:"percent",uses:134,max:500,active:true},
+  {id:2,code:"SAVE15",val:15,type:"flat",uses:89,max:200,active:true},
+  {id:3,code:"NEWUSER",val:10,type:"percent",uses:412,max:1000,active:true}
+];
+let activeTab='dashboard',addOpen=false;
+let tfaCode=['','','','','',''],tfaCallback=null;
+
+function getRealOrders(){
+  return JSON.parse(localStorage.getItem('tc_orders')||'[]');
+}
+
+/* ════ TABS ════ */
+function setTab(t){
+  activeTab=t;addOpen=false;
+  document.querySelectorAll('.s-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sb-'+t)?.classList.add('active');
+  render();
+}
+
+function render(){
+  const m=document.getElementById('admin-main');
+  if(activeTab==='dashboard')m.innerHTML=renderDashboard();
+  else if(activeTab==='products')m.innerHTML=renderProducts();
+  else if(activeTab==='orders')m.innerHTML=renderOrders();
+  else if(activeTab==='customers')m.innerHTML=renderCustomers();
+  else if(activeTab==='coupons')m.innerHTML=renderCoupons();
+}
+
+/* ════ DASHBOARD ════ */
+function renderDashboard(){
+  const orders=getRealOrders();
+  const realRevenue=orders.reduce((a,b)=>a+(b.total||0),0);
+  const maxRev=Math.max(...MONTHLY.map(d=>d.rev));
+  return`
+  <div class="page-title">Sales Dashboard</div>
+  <div class="stats-grid">
+    ${[
+      ['💰','$'+(133100+realRevenue).toLocaleString(),'Total Revenue','↑ 12.4% this month'],
+      ['🛒',1988+orders.length,'Total Orders',orders.length?' incl. '+orders.length+' real':'Place an order to see it here'],
+      ['👥',BASE_CUSTOMERS.length,'Customers','3 new this week'],
+      ['📦',products.length,'Products',products.filter(p=>p.stock<=5).length+' low stock ⚡']
+    ].map(([ic,v,l,ch])=>`
+    <div class="stat-card">
+      <div class="stat-icon">${ic}</div>
+      <div class="stat-val">${v}</div>
+      <div class="stat-label">${l}</div>
+      <div class="stat-change">${ch}</div>
+    </div>`).join('')}
+  </div>
+  <div class="chart-card">
+    <div class="chart-head">
+      Monthly Revenue
+      <span style="font-size:11px;color:var(--text-faint);font-weight:400">Aug 2024 – Jan 2025</span>
+    </div>
+    <div class="chart-bars">
+      ${MONTHLY.map(d=>`
+      <div class="bar-col">
+        <div class="bar-fill" style="height:${Math.round(d.rev/maxRev*108)+6}px" data-tip="$${d.rev.toLocaleString()} · ${d.ord} orders"></div>
+        <span class="bar-label">${d.m}</span>
+      </div>`).join('')}
+    </div>
+  </div>
+  <div class="table-card">
+    <div class="table-head">
+      <div class="table-title">Recent Real Orders</div>
+      <button class="btn-s" onclick="setTab('orders')">View All</button>
+    </div>
+    ${orders.length===0
+      ?`<div class="empty-note">No real orders yet — complete a checkout on the storefront and it'll appear here automatically.</div>`
+      :`<table class="dt"><thead><tr><th>Order ID</th><th>Date</th><th>Status</th><th>Total</th><th>Payment</th></tr></thead><tbody>
+        ${orders.slice(0,5).map(o=>`<tr>
+          <td style="font-weight:700;color:var(--plum)">${o.id}</td>
+          <td style="color:var(--text-faint)">${o.date}</td>
+          <td><span class="pill p-${o.status}">${o.status}</span></td>
+          <td style="font-weight:800">$${(o.total||0).toFixed(2)}</td>
+          <td style="color:var(--text-faint)">${o.payment||'—'}</td>
+        </tr>`).join('')}
+        </tbody></table>`}
+  </div>`;
+}
+
+/* ════ PRODUCTS ════ */
+function renderProducts(){
+  return`
+  <div class="page-title">Products 📦
+    <button class="btn-p" onclick="addOpen=!addOpen;render()">
+      ${addOpen?'✕ Cancel':'+ Add Product'}
+    </button>
+  </div>
+  ${addOpen?`
+  <div class="form-card">
+    <div style="font-weight:700;font-size:14px;margin-bottom:14px;color:var(--text)">New Product</div>
+    <div class="form-grid">
+      <div class="ff"><label>Product Name</label><input id="af-name" placeholder="eg. Velvet Coat"/></div>
+      <div class="ff"><label>Price ($)</label><input id="af-price" type="number" placeholder="89"/></div>
+      <div class="ff"><label>Original Price ($)</label><input id="af-orig" type="number" placeholder="120"/></div>
+      <div class="ff"><label>Stock</label><input id="af-stock" type="number" placeholder="20"/></div>
+      <div class="ff"><label>Category</label>
+        <select id="af-cat"><option>Men's</option><option>Women's</option><option>Kids'</option><option>Accessories</option><option>Unisex</option></select>
+      </div>
+      <div class="ff"><label>Badge</label>
+        <select id="af-badge"><option value="">None</option><option>Hot</option><option>New</option><option>Sale</option></select>
+      </div>
+    </div>
+    <div style="background:var(--bg-sunken);border:1px solid var(--border);border-radius:9px;padding:9px 14px;font-size:12px;color:var(--text-muted);margin-bottom:13px">
+      🔐 Adding a product requires 2FA admin verification
+    </div>
+    <button class="btn-p" onclick="reqTFA('Add New Product',doAddProduct)">Save Product 🔐</button>
+  </div>`:''}
+  <div class="table-card">
+    <div class="table-head">
+      <div class="table-title">${products.length} Products</div>
+      <div class="toolbar">
+        <input class="srch" placeholder="Search products…" oninput="filterProds(this.value)"/>
+        <select class="sl" onchange="sortProds(this.value)">
+          <option value="">Sort…</option>
+          <option value="price-asc">Price ↑</option>
+          <option value="price-desc">Price ↓</option>
+          <option value="stock">Low Stock</option>
+        </select>
+      </div>
+    </div>
+    <table class="dt" id="prod-table">
+      <thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Badge</th><th>Actions</th></tr></thead>
+      <tbody id="prod-tbody">
+        ${products.map(p=>prodRow(p)).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+function prodRow(p){
+  return`<tr id="pr-${p.id}">
+    <td style="font-weight:700">${p.name}</td>
+    <td style="color:var(--text-faint)">${p.cat}</td>
+    <td style="font-weight:700">$${p.price}</td>
+    <td style="color:${p.stock<=5?'#b1493f':'var(--green)'};font-weight:700">${p.stock}${p.stock<=5?' ⚡':''}</td>
+    <td>${p.badge?`<span class="badge b-${p.badge}">${p.badge}</span>`:'—'}</td>
+    <td>
+      <button class="ab ab-edit" onclick="reqTFA('Edit ${p.name}',()=>showToast('${p.name} saved ✓'))">Edit 🔐</button>
+      <button class="ab ab-del" onclick="reqTFA('Delete ${p.name}',()=>delProduct(${p.id}))">Del 🔐</button>
+    </td>
+  </tr>`;
+}
+function doAddProduct(){
+  const name=document.getElementById('af-name')?.value?.trim()||'New Product';
+  const price=parseFloat(document.getElementById('af-price')?.value)||49;
+  const orig=parseFloat(document.getElementById('af-orig')?.value)||price;
+  const stock=parseInt(document.getElementById('af-stock')?.value)||20;
+  const cat=document.getElementById('af-cat')?.value||'Unisex';
+  const badge=document.getElementById('af-badge')?.value||null;
+  products.unshift({id:Date.now(),name,price,orig,cat,badge:badge||null,stock});
+  addOpen=false;render();showToast('"'+name+'" added ✓');
+}
+function delProduct(id){products=products.filter(p=>p.id!==id);render();showToast('Product deleted','warn');}
+function filterProds(q){
+  document.querySelectorAll('#prod-tbody tr').forEach(r=>{
+    r.style.display=r.textContent.toLowerCase().includes(q.toLowerCase())?'':'none';
+  });
+}
+function sortProds(v){
+  if(v==='price-asc')products.sort((a,b)=>a.price-b.price);
+  else if(v==='price-desc')products.sort((a,b)=>b.price-a.price);
+  else if(v==='stock')products.sort((a,b)=>a.stock-b.stock);
+  render();
+}
+
+/* ════ ORDERS ════ */
+function renderOrders(){
+  const orders=getRealOrders();
+  return`
+  <div class="page-title">Orders 🛒</div>
+  <div class="table-card">
+    <div class="table-head">
+      <div class="table-title">${orders.length} Real Orders (from storefront checkout)</div>
+    </div>
+    ${orders.length===0
+      ?`<div class="empty-note">No orders yet. Place an order via the storefront and it will appear here automatically.</div>`
+      :`<table class="dt">
+        <thead><tr><th>Order ID</th><th>Date</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody>
+          ${orders.map(o=>`<tr>
+            <td style="font-weight:700;color:var(--plum)">${o.id}</td>
+            <td style="color:var(--text-faint)">${o.date}</td>
+            <td style="color:var(--text-muted)">${o.items} item${o.items>1?'s':''}</td>
+            <td style="font-weight:800">$${(o.total||0).toFixed(2)}</td>
+            <td style="color:var(--text-faint)">${o.payment||'—'}</td>
+            <td>
+              <select style="border:1.4px solid var(--border);border-radius:7px;padding:4px 8px;font-size:11px;font-weight:700;background:var(--bg-elevated);color:var(--text)"
+                onchange="reqTFA('Update Order ${o.id}',()=>showToast('Order ${o.id} updated ✓'))">
+                ${['Processing','Shipped','Delivered','Cancelled'].map(s=>`<option${o.status===s?' selected':''}>${s}</option>`).join('')}
+              </select>
+            </td>
+            <td><button class="ab ab-view" onclick="reqTFA('View Order ${o.id}',()=>showToast('Order ${o.id} opened ✓'))">View 🔐</button></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>`}
+  </div>`;
+}
+
+/* ════ CUSTOMERS ════ */
+function renderCustomers(){
+  return`
+  <div class="page-title">Customers 👥</div>
+  <div class="table-card">
+    <div class="table-head">
+      <div class="table-title">${BASE_CUSTOMERS.length} Customers</div>
+      <div class="toolbar"><input class="srch" placeholder="Search customers…"/></div>
+    </div>
+    <table class="dt">
+      <thead><tr><th>Name</th><th>Email</th><th>Joined</th><th>Orders</th><th>Spent</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody>
+        ${BASE_CUSTOMERS.map(c=>`<tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--plum),var(--plum-light));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:10px;flex-shrink:0">
+                ${c.name.split(' ').map(w=>w[0]).join('')}
+              </div>
+              <span style="font-weight:600">${c.name}</span>
+            </div>
+          </td>
+          <td style="color:var(--text-faint);font-size:12px">${c.email}</td>
+          <td style="color:var(--text-faint)">${c.joined}</td>
+          <td style="font-weight:700">${c.orders}</td>
+          <td style="font-weight:800">$${c.spent.toLocaleString()}</td>
+          <td><span class="pill" style="background:var(--accent-soft);color:var(--plum)">${c.status}</span></td>
+          <td><button class="ab ab-view" onclick="reqTFA('View ${c.name}',()=>showToast('${c.name} profile opened ✓'))">View 🔐</button></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+/* ════ COUPONS ════ */
+function renderCoupons(){
+  return`
+  <div class="page-title">Coupons 🏷️</div>
+  <div class="form-card">
+    <div style="font-weight:700;font-size:13px;margin-bottom:14px;color:var(--text)">Create New Coupon</div>
+    <div style="display:flex;gap:11px;flex-wrap:wrap;align-items:flex-end">
+      <div class="ff"><label>Code</label><input id="cf-code" placeholder="SUMMER30" style="width:120px;text-transform:uppercase"/></div>
+      <div class="ff"><label>Value</label><input id="cf-val" type="number" placeholder="20" style="width:70px"/></div>
+      <div class="ff"><label>Type</label>
+        <select id="cf-type" style="width:100px"><option value="percent">% Off</option><option value="flat">$ Off</option></select>
+      </div>
+      <div class="ff"><label>Max Uses</label><input id="cf-max" type="number" placeholder="500" style="width:80px"/></div>
+      <button class="btn-p" onclick="reqTFA('Create Coupon',doCreateCoupon)">Create 🔐</button>
+    </div>
+  </div>
+  <div class="table-card">
+    <div class="table-head"><div class="table-title">${coupons.length} Coupons</div></div>
+    <table class="dt">
+      <thead><tr><th>Code</th><th>Discount</th><th>Type</th><th>Used</th><th>Max</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        ${coupons.map((c,i)=>`<tr>
+          <td style="font-weight:800;font-family:monospace">${c.code}</td>
+          <td style="font-weight:700;color:var(--green)">${c.type==='percent'?c.val+'%':'$'+c.val}</td>
+          <td style="color:var(--text-faint)">${c.type==='percent'?'Percentage':'Fixed Amount'}</td>
+          <td>${c.uses.toLocaleString()}</td>
+          <td>${c.max.toLocaleString()}</td>
+          <td><span class="pill" style="background:${c.active?'#e3eee0':'#fae6e3'};color:${c.active?'#3f6b48':'#8a3838'}">${c.active?'Active':'Inactive'}</span></td>
+          <td>
+            <button class="ab ab-tog" onclick="reqTFA('Toggle ${c.code}',()=>{coupons[${i}].active=!coupons[${i}].active;render();showToast('${c.code} toggled ✓')})">Toggle 🔐</button>
+            <button class="ab ab-del" onclick="reqTFA('Delete ${c.code}',()=>{coupons.splice(${i},1);render();showToast('Deleted','warn')})">Del 🔐</button>
+          </td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+function doCreateCoupon(){
+  const code=(document.getElementById('cf-code')?.value||'').toUpperCase().trim();
+  const val=parseFloat(document.getElementById('cf-val')?.value)||10;
+  const type=document.getElementById('cf-type')?.value||'percent';
+  const max=parseInt(document.getElementById('cf-max')?.value)||500;
+  if(!code){showToast('Enter a coupon code','warn');return;}
+  coupons.unshift({id:Date.now(),code,val,type,uses:0,max,active:true});
+  render();showToast('"'+code+'" created ✓');
+}
+
+/* ════ REAL 2FA ════ */
+function reqTFA(label,cb){
+  tfaCallback=cb;
+  const u=JSON.parse(localStorage.getItem('tc_user')||'{}');
+  document.getElementById('tfa-action-title').textContent=label||'Verify Action';
+  document.getElementById('tfa-email').textContent=u.email||'admin@threadco.com';
+  document.getElementById('tfa-modal').classList.add('show');
+  setEmailStatus('Sending code to your email…','sending');
+  buildTFAInputs();
+  setTimeout(()=>document.getElementById('tfa-0')?.focus(),80);
+  if(typeof sendTwoFactorCode==='function'){
+    sendTwoFactorCode(u.email,u.name||'Admin',
+      r=>setEmailStatus(r.real?'Code sent! Check your inbox.':'Code generated — see banner.','sent'),
+      ()=>setEmailStatus('Could not send email — check config.','failed')
+    );
+  }
+}
+function setEmailStatus(msg,type){
+  const el=document.getElementById('email-status'),txt=document.getElementById('email-status-text');
+  if(!el||!txt)return;
+  el.className='email-status '+type;
+  const ic={sending:'<span class="spinner"></span>',sent:'✅ ',failed:'❌ '};
+  txt.innerHTML=(ic[type]||'')+msg;
+}
+function buildTFAInputs(){
+  tfaCode=['','','','','',''];
+  document.getElementById('tfa-inputs').innerHTML=tfaCode.map((_,i)=>
+    `<input class="tfa-inp" id="tfa-${i}" type="text" inputmode="numeric" maxlength="1"
+      oninput="onIn(${i},this.value)" onkeydown="onKey(${i},event)"/>`).join('');
+  document.getElementById('tfa-err').textContent='';
+}
+function onIn(i,v){
+  v=v.replace(/\D/g,'').slice(-1);tfaCode[i]=v;
+  const el=document.getElementById('tfa-'+i);if(el){el.value=v;el.classList.toggle('filled',!!v);}
+  if(v&&i<5)setTimeout(()=>document.getElementById('tfa-'+(i+1))?.focus(),10);
+  document.getElementById('tfa-err').textContent='';
+}
+function onKey(i,e){
+  if(e.key==='Backspace'&&!tfaCode[i]&&i>0){
+    const p=document.getElementById('tfa-'+(i-1));
+    if(p){tfaCode[i-1]='';p.value='';p.classList.remove('filled');setTimeout(()=>p.focus(),10);}
+  }
+  if(e.key==='Enter')verifyTFA();
+}
+function verifyTFA(){
+  const full=tfaCode.join('');
+  const errEl=document.getElementById('tfa-err');
+  if(full.length<6){errEl.textContent='Enter all 6 digits';return;}
+  const btn=document.getElementById('btn-verify');
+  btn.disabled=true;btn.innerHTML='<span class="spinner light"></span> Verifying…';
+  let result='ok';
+  if(typeof validateOTP==='function')result=validateOTP(full);
+  setTimeout(()=>{
+    btn.disabled=false;btn.textContent='Verify & Execute →';
+    if(result==='ok'){closeTFA();if(tfaCallback){tfaCallback();tfaCallback=null;}}
+    else if(result==='expired'){errEl.textContent='Code expired — resend a new one.';tfaCode=['','','','','',''];buildTFAInputs();}
+    else{
+      errEl.textContent='Incorrect code. Try again.';
+      tfaCode=['','','','','',''];buildTFAInputs();
+      const w=document.getElementById('tfa-inputs');
+      w.style.animation='none';w.offsetHeight;w.style.animation='shake .4s ease';
+    }
+  },500);
+}
+function resendTFA(){
+  const u=JSON.parse(localStorage.getItem('tc_user')||'{}');
+  tfaCode=['','','','','',''];buildTFAInputs();
+  setEmailStatus('Resending code…','sending');
+  if(typeof sendTwoFactorCode==='function'){
+    sendTwoFactorCode(u.email,u.name||'Admin',
+      r=>setEmailStatus(r.real?'New code sent!':'Code regenerated.','sent'),
+      ()=>setEmailStatus('Resend failed.','failed')
+    );
+  }
+  setTimeout(()=>document.getElementById('tfa-0')?.focus(),60);
+}
+function closeTFA(){document.getElementById('tfa-modal').classList.remove('show');tfaCallback=null;}
+
+function signOut(){localStorage.removeItem('tc_user');location.href='index.html';}
+
+function showToast(msg,type='ok'){
+  let t=document.getElementById('tc-toast');
+  if(!t){t=document.createElement('div');t.id='tc-toast';t.className='toast';document.body.appendChild(t);}
+  t.textContent=msg;
+  t.style.background=type==='warn'?'#8a3838':'#3f6b48';
+  t.classList.add('show');
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+/* ════ INIT ════ */
+window.addEventListener('DOMContentLoaded',()=>{
+  const u=JSON.parse(localStorage.getItem('tc_user')||'null');
+  if(!u||!u.isAdmin){location.href='auth.html';return;}
+  document.getElementById('admin-user-label').textContent=u.email;
+  setTab('dashboard');
+});
+window.addEventListener('load',()=>{
+  setTimeout(()=>document.getElementById('page-loader').classList.add('hidden'),400);
+});
+</script>
+</body>
+</html>

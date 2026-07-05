@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Blog – THREAD CO.</title>
+<meta name="description" content="Style tips, fashion guides, brand stories and trend reports from the THREAD CO. team."/>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png"/>
+<link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png"/>
+<link rel="shortcut icon" href="favicon.ico"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script>
+(function(){
+  var saved=localStorage.getItem('tc_theme')||'light';
+  document.documentElement.setAttribute('data-theme',saved);
+})();
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --plum:#5f0f40;--plum-light:#7a2f5a;--plum-pale:#9c4d78;
+  --accent-soft:rgba(95,15,64,.08);--accent-glow:rgba(95,15,64,.2);
+  --bg:#faf9f8;--bg-elevated:#ffffff;--bg-sunken:#f3eef1;--bg-hero:#1a0e16;
+  --text:#1a1015;--text-muted:#4a4147;--text-faint:#6b6268;
+  --border:#e3dadf;--border-strong:#cdc0c7;
+  --nav-bg:rgba(250,249,248,.9);--nav-text:#1a1015;--nav-text-muted:#4a4147;
+  --card-shadow:0 1px 3px rgba(20,10,16,.05);
+  --card-shadow-hover:0 10px 26px rgba(20,10,16,.09);
+  --toggle-bg:#1a1015;--toggle-icon:#9c4d78;--footer-bg:#1a0e16;
+}
+[data-theme="dark"]{
+  --bg:#150d12;--bg-elevated:#1e1318;--bg-sunken:#0e090c;--bg-hero:#0a0508;
+  --text:#f5f1f3;--text-muted:#c4b9c0;--text-faint:#8e8389;
+  --border:#2a1f25;--border-strong:#3e313a;
+  --nav-bg:rgba(21,13,18,.88);--nav-text:#f5f1f3;--nav-text-muted:#c4b9c0;
+  --card-shadow:0 1px 3px rgba(0,0,0,.3);
+  --card-shadow-hover:0 12px 30px rgba(0,0,0,.4);
+  --toggle-bg:#9c4d78;--toggle-icon:#150d12;--footer-bg:#0a0508;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;transition:background .3s,color .3s;position:relative}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;font-family:inherit;border:none;background:none}
+::selection{background:var(--plum);color:#fff}
+
+#site-bg-anim{position:fixed;inset:0;z-index:-1;overflow:hidden;background:var(--bg);transition:background .3s}
+#site-bg-anim svg{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:min(900px,90vw);height:auto;opacity:.22}
+[data-theme="dark"] #site-bg-anim svg{opacity:.28}
+#figure path,#figure circle{stroke:var(--plum);stroke-width:1.5;stroke-opacity:.3}
+.dress-layer path,.dress-layer rect,.dress-layer ellipse{filter:drop-shadow(0 0 12px var(--accent-glow))}
+.dress-layer{opacity:0;transition:opacity 1.2s ease}.dress-layer.on{opacity:1}
+
+#page-loader{position:fixed;inset:0;z-index:10000;background:var(--bg);display:flex;align-items:center;justify-content:center;transition:opacity .45s,visibility .45s}
+#page-loader.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loader-logo{display:flex;flex-direction:column;align-items:center;gap:14px}
+.loader-mark{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--plum),var(--plum-light));display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:17px;animation:loaderFade 1.6s ease-in-out infinite}
+@keyframes loaderFade{0%,100%{opacity:1}50%{opacity:.5}}
+.loader-bar{width:110px;height:2px;background:var(--border);border-radius:2px;overflow:hidden;position:relative}
+.loader-bar::after{content:'';position:absolute;inset:0;width:35%;background:var(--plum);border-radius:2px;animation:loaderSlide 1.3s ease-in-out infinite}
+@keyframes loaderSlide{0%{transform:translateX(-100%)}100%{transform:translateX(330%)}}
+
+.theme-toggle{position:relative;width:48px;height:26px;border-radius:14px;background:var(--toggle-bg);cursor:pointer;flex-shrink:0;transition:background .3s;display:flex;align-items:center;padding:3px}
+.theme-toggle-knob{width:20px;height:20px;border-radius:50%;background:var(--toggle-icon);display:flex;align-items:center;justify-content:center;font-size:10px;transition:transform .3s;transform:translateX(0)}
+[data-theme="dark"] .theme-toggle-knob{transform:translateX(22px)}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:900;height:64px;display:flex;align-items:center;padding:0 32px;gap:18px;background:var(--nav-bg);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);transition:background .3s,border-color .3s}
+.nav-logo{display:flex;align-items:center;gap:9px;flex-shrink:0;cursor:pointer}
+.nav-logo-mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--plum),var(--plum-light));display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:12px;transition:transform .2s}
+.nav-logo:hover .nav-logo-mark{transform:scale(1.05)}
+.nav-logo-text{color:var(--nav-text);font-weight:700;font-size:14px;letter-spacing:2.5px}
+.nav-links{display:flex;align-items:center;gap:2px;flex:1;padding-left:20px}
+.nav-link{color:var(--nav-text-muted);font-size:13px;font-weight:500;padding:7px 13px;border-radius:7px;transition:color .2s,background .2s}
+.nav-link:hover{color:var(--nav-text);background:var(--bg-sunken)}
+.nav-link.active{color:var(--plum)}
+.nav-right{display:flex;align-items:center;gap:8px;margin-left:auto}
+.nav-icon{color:var(--nav-text-muted);font-size:17px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:9px;position:relative;transition:color .2s,background .2s}
+.nav-icon:hover{color:var(--nav-text);background:var(--bg-sunken)}
+.nav-badge{position:absolute;top:3px;right:3px;background:var(--plum);color:#fff;font-size:9px;font-weight:700;border-radius:50%;width:14px;height:14px;display:flex;align-items:center;justify-content:center}
+.nav-cta{background:var(--plum);border-radius:8px;color:#fff;font-weight:600;font-size:13px;padding:8px 16px;transition:opacity .2s,transform .15s}
+.nav-cta:hover{opacity:.9;transform:translateY(-1px)}
+
+/* HERO */
+.blog-hero{background:var(--bg-hero);padding-top:64px;position:relative;z-index:1;overflow:hidden}
+.blog-hero-inner{max-width:1180px;margin:0 auto;padding:52px 32px 44px;display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:center}
+.blog-hero-eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(95,15,64,.12);border:1px solid rgba(95,15,64,.26);border-radius:20px;padding:5px 13px;margin-bottom:18px}
+.hero-dot{width:5px;height:5px;background:var(--plum-pale);border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.blog-hero-eyebrow-text{font-size:10px;font-weight:700;letter-spacing:1.2px;color:var(--plum-pale);text-transform:uppercase}
+.blog-hero-h1{font-family:'Playfair Display',serif;color:#f7f3f5;font-size:44px;line-height:1.1;font-weight:700;margin-bottom:14px}
+.blog-hero-h1 span{color:var(--plum-pale)}
+.blog-hero-sub{color:rgba(247,243,245,.6);font-size:15px;line-height:1.7;margin-bottom:28px}
+.blog-hero-search{display:flex;gap:9px}
+.blog-search-input{flex:1;background:rgba(247,243,245,.07);border:1.4px solid rgba(247,243,245,.14);border-radius:10px;color:#f7f3f5;font-size:14px;padding:12px 15px;font-family:inherit;outline:none;transition:border-color .2s}
+.blog-search-input::placeholder{color:rgba(247,243,245,.35)}
+.blog-search-input:focus{border-color:rgba(95,15,64,.45)}
+.btn-search{background:var(--plum);border-radius:10px;color:#fff;font-weight:700;font-size:14px;padding:12px 22px;transition:opacity .2s}
+.btn-search:hover{opacity:.9}
+.featured-card{background:rgba(247,243,245,.04);border:1px solid rgba(247,243,245,.09);border-radius:18px;overflow:hidden;cursor:pointer;transition:all .2s}
+.featured-card:hover{background:rgba(247,243,245,.07);border-color:rgba(95,15,64,.3);transform:translateY(-2px)}
+.featured-card-thumb{height:180px;display:flex;align-items:center;justify-content:center;font-size:64px;background:rgba(95,15,64,.12)}
+.featured-card-body{padding:18px 20px}
+.featured-cat-pill{display:inline-block;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:10px;letter-spacing:.4px;text-transform:uppercase}
+.featured-card-title{font-family:'Playfair Display',serif;color:#f7f3f5;font-size:20px;font-weight:700;line-height:1.25;margin-bottom:8px}
+.featured-card-meta{font-size:11px;color:rgba(247,243,245,.4);display:flex;align-items:center;gap:12px}
+
+/* CATEGORIES */
+.cat-bar{max-width:1180px;margin:0 auto;padding:28px 32px 0;display:flex;gap:9px;flex-wrap:wrap;position:relative;z-index:1}
+.cat-pill{padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;border:1.4px solid var(--border);color:var(--text-muted);background:var(--bg-elevated);transition:all .18s;cursor:pointer}
+.cat-pill:hover{border-color:var(--plum);color:var(--plum)}
+.cat-pill.active{background:var(--plum);border-color:var(--plum);color:#fff}
+
+/* GRID */
+.blog-wrap{max-width:1180px;margin:0 auto;padding:26px 32px 70px;position:relative;z-index:1}
+.results-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:10px}
+.results-count{font-size:13px;color:var(--text-muted)}
+.results-count strong{color:var(--text)}
+.sort-sel{padding:8px 13px;border:1.4px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;background:var(--bg-elevated);color:var(--text);cursor:pointer}
+.blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.bcard{background:var(--bg-elevated);border-radius:16px;overflow:hidden;border:1px solid var(--border);cursor:pointer;box-shadow:var(--card-shadow);transition:transform .2s,box-shadow .2s,border-color .2s}
+.bcard:hover{transform:translateY(-4px);box-shadow:var(--card-shadow-hover);border-color:var(--border-strong)}
+.bcard-thumb{height:160px;display:flex;align-items:center;justify-content:center;font-size:52px;transition:transform .3s}
+.bcard:hover .bcard-thumb{transform:scale(1.04)}
+.bcard-body{padding:16px 18px 20px}
+.bcard-cat-pill{display:inline-block;font-size:10px;font-weight:700;padding:3px 9px;border-radius:12px;margin-bottom:10px;text-transform:uppercase;letter-spacing:.4px}
+.bcard-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;line-height:1.3;margin-bottom:8px;color:var(--text)}
+.bcard-excerpt{font-size:13px;color:var(--text-muted);line-height:1.65;margin-bottom:14px}
+.bcard-meta{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--text-faint)}
+.bcard-author{display:flex;align-items:center;gap:7px}
+.bcard-avatar{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--plum),var(--plum-light));display:flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:700;flex-shrink:0}
+.read-more{color:var(--plum);font-weight:700;font-size:12px}
+
+/* CAT COLORS */
+.cat-Style{background:#f0dde9;color:#7a2c5c}
+.cat-Trends{background:#dde8dd;color:#3f6b48}
+.cat-Culture{background:#e3eaf3;color:#2f4d7a}
+.cat-Sustainability{background:#e8f0e3;color:#3d5e36}
+.cat-Brand{background:#f5e8d3;color:#7a5428}
+.cat-Tips{background:#e8e0f0;color:#4a2c7a}
+[data-theme="dark"] .cat-Style{background:#391f30;color:#d896bc}
+[data-theme="dark"] .cat-Trends{background:#1d2e1f;color:#7fb98c}
+[data-theme="dark"] .cat-Culture{background:#16213a;color:#8caee0}
+[data-theme="dark"] .cat-Sustainability{background:#1e2c1c;color:#8cc47a}
+[data-theme="dark"] .cat-Brand{background:#2e2010;color:#d4a06a}
+[data-theme="dark"] .cat-Tips{background:#1e1630;color:#a08acc}
+
+/* EMPTY */
+.empty-blog{text-align:center;padding:70px 20px;grid-column:1/-1}
+.empty-icon{font-size:52px;margin-bottom:14px;opacity:.6}
+.empty-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:6px}
+.empty-sub{color:var(--text-muted);font-size:13px;margin-bottom:18px}
+
+/* NEWSLETTER */
+.nl-section{background:var(--bg-hero);padding:64px 32px;position:relative;z-index:1}
+.nl-inner{max-width:500px;margin:0 auto;text-align:center}
+.nl-title{font-family:'Playfair Display',serif;color:#f7f3f5;font-size:30px;font-weight:700;margin-bottom:8px}
+.nl-sub{color:rgba(247,243,245,.55);font-size:14px;line-height:1.7;margin-bottom:24px}
+.nl-form{display:flex;gap:8px}
+.nl-input{flex:1;background:rgba(247,243,245,.07);border:1.4px solid rgba(247,243,245,.13);border-radius:10px;color:#f7f3f5;font-size:14px;padding:12px 15px;font-family:inherit;outline:none;transition:border-color .2s}
+.nl-input::placeholder{color:rgba(247,243,245,.35)}
+.nl-input:focus{border-color:rgba(95,15,64,.45)}
+.btn-nl{background:var(--plum);border-radius:10px;color:#fff;font-weight:700;font-size:13px;padding:12px 20px;white-space:nowrap;transition:opacity .2s}
+.btn-nl:hover{opacity:.9}
+.nl-success{display:none;align-items:center;gap:7px;justify-content:center;color:#7fb98c;font-weight:600;font-size:13px;margin-top:11px}
+.nl-hint{color:rgba(247,243,245,.22);font-size:11px;margin-top:10px}
+
+/* ARTICLE MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9998;display:none;align-items:flex-start;justify-content:center;backdrop-filter:blur(4px);padding:40px 20px;overflow-y:auto}
+.modal-overlay.show{display:flex}
+.modal-box{background:var(--bg-elevated);border-radius:22px;width:100%;max-width:720px;padding:40px 44px;position:relative;margin:auto}
+.modal-close{position:absolute;top:18px;right:18px;width:34px;height:34px;border-radius:50%;background:var(--bg-sunken);display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--text-muted);transition:all .15s}
+.modal-close:hover{background:var(--border);color:var(--text)}
+.modal-cat{display:inline-block;font-size:10px;font-weight:700;padding:4px 11px;border-radius:12px;margin-bottom:14px;text-transform:uppercase;letter-spacing:.4px}
+.modal-title{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;line-height:1.18;margin-bottom:14px;color:var(--text)}
+.modal-meta{display:flex;align-items:center;gap:16px;font-size:12px;color:var(--text-faint);margin-bottom:24px;padding-bottom:22px;border-bottom:1px solid var(--border)}
+.modal-author-avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--plum),var(--plum-light));display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700;flex-shrink:0}
+.modal-body{font-size:15px;color:var(--text-muted);line-height:1.85}
+.modal-body p{margin-bottom:18px}
+.modal-body h3{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--text);margin:28px 0 12px}
+.modal-body blockquote{border-left:3px solid var(--plum);padding-left:18px;font-style:italic;color:var(--text-faint);margin:22px 0}
+.modal-footer{margin-top:32px;padding-top:22px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.modal-tags{display:flex;gap:8px;flex-wrap:wrap}
+.tag{background:var(--bg-sunken);border-radius:7px;padding:5px 11px;font-size:11px;font-weight:600;color:var(--text-muted)}
+.btn-shop-article{background:var(--plum);border-radius:10px;color:#fff;font-weight:700;font-size:13px;padding:10px 20px;transition:opacity .2s}
+.btn-shop-article:hover{opacity:.9}
+
+/* FOOTER */
+footer{background:var(--footer-bg);padding:48px 40px 22px;position:relative;z-index:1}
+.footer-inner{max-width:1240px;margin:0 auto}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:44px;margin-bottom:36px}
+.footer-brand{display:flex;align-items:center;gap:9px;margin-bottom:14px}
+.footer-brand-mark{width:28px;height:28px;background:linear-gradient(135deg,var(--plum),var(--plum-light));border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:11px}
+.footer-brand-name{color:#f7f3f5;font-weight:700;font-size:13px;letter-spacing:2.5px}
+.footer-desc{color:rgba(247,243,245,.5);font-size:12px;line-height:1.75;max-width:230px}
+.footer-col-title{color:#f7f3f5;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:14px}
+.footer-link{display:block;color:rgba(247,243,245,.52);font-size:12px;margin-bottom:9px;transition:color .2s}
+.footer-link:hover{color:rgba(247,243,245,.85)}
+.footer-bottom{border-top:1px solid rgba(247,243,245,.1);padding-top:18px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:rgba(247,243,245,.35);flex-wrap:wrap;gap:8px}
+
+.toast{position:fixed;bottom:22px;right:22px;z-index:9999;padding:12px 19px;border-radius:10px;font-weight:600;font-size:13px;color:#fff;box-shadow:0 8px 22px rgba(0,0,0,.18);transition:opacity .25s,transform .25s;pointer-events:none;transform:translateY(14px);opacity:0}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:1100px){.blog-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){
+  .blog-hero-inner{grid-template-columns:1fr}
+  .featured-card{display:none}
+  .blog-grid{grid-template-columns:1fr}
+  .modal-box{padding:28px 22px}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="site-bg-anim">
+  <svg id="dress-svg" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
+    <g id="figure">
+      <circle cx="200" cy="70" r="32" fill="var(--plum)"/>
+      <path d="M160 110 Q200 100 240 110 L250 280 Q200 295 150 280 Z" fill="var(--plum)"/>
+      <path d="M160 280 L155 480 L185 480 L195 300 Z" fill="var(--plum)"/>
+      <path d="M240 280 L245 480 L215 480 L205 300 Z" fill="var(--plum)"/>
+      <path d="M160 120 L120 220 L140 230 L168 140 Z" fill="var(--plum)"/>
+      <path d="M240 120 L280 220 L260 230 L232 140 Z" fill="var(--plum)"/>
+    </g>
+    <g class="dress-layer" id="layer-jacket">
+      <path d="M150 105 Q200 92 250 105 L262 200 L235 212 L235 290 L165 290 L165 212 L138 200 Z" fill="var(--plum-light)"/>
+      <text x="200" y="250" text-anchor="middle" font-family="DM Sans" font-size="11" font-weight="700" fill="#fff" opacity=".85" letter-spacing="1.5">THREAD CO.</text>
+    </g>
+    <g class="dress-layer" id="layer-shoes">
+      <ellipse cx="168" cy="488" rx="26" ry="11" fill="var(--plum-light)"/>
+      <ellipse cx="232" cy="488" rx="26" ry="11" fill="var(--plum-light)"/>
+      <text x="168" y="491" text-anchor="middle" font-family="DM Sans" font-size="6" font-weight="700" fill="#fff" opacity=".8">TC</text>
+      <text x="232" y="491" text-anchor="middle" font-family="DM Sans" font-size="6" font-weight="700" fill="#fff" opacity=".8">TC</text>
+    </g>
+    <g class="dress-layer" id="layer-accessories">
+      <path d="M168 48 Q200 30 232 48 Q236 60 230 64 L170 64 Q164 60 168 48 Z" fill="var(--plum-light)"/>
+      <rect x="185" y="38" width="30" height="8" rx="3" fill="#fff" opacity=".15"/>
+      <rect x="255" y="230" width="38" height="50" rx="8" fill="var(--plum-light)"/>
+      <text x="274" y="259" text-anchor="middle" font-family="DM Sans" font-size="8" font-weight="700" fill="#fff" opacity=".85">TC</text>
+    </g>
+  </svg>
+</div>
+
+<div id="page-loader">
+  <div class="loader-logo">
+    <div class="loader-mark">TC</div>
+    <div class="loader-bar"></div>
+  </div>
+</div>
+
+<nav class="nav">
+  <div class="nav-logo" onclick="location.href='index.html'">
+    <div class="nav-logo-mark">TC</div>
+    <span class="nav-logo-text">THREAD CO.</span>
+  </div>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="shop.html" class="nav-link">Shop</a>
+    <a href="blog.html" class="nav-link active">Blog</a>
+  </div>
+  <div class="nav-right">
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+      <span class="theme-toggle-knob" id="theme-knob">☀️</span>
+    </button>
+    <button class="nav-icon" title="Wishlist" onclick="location.href='wishlist.html'">
+      ♡<span class="nav-badge" id="wl-count" style="display:none">0</span>
+    </button>
+    <button class="nav-icon" title="Cart" onclick="location.href='cart.html'">
+      🛒<span class="nav-badge" id="cart-count" style="display:none">0</span>
+    </button>
+    <button class="nav-cta" id="nav-user-btn" onclick="location.href='auth.html'">Sign In</button>
+  </div>
+</nav>
+
+<div class="blog-hero">
+  <div class="blog-hero-inner">
+    <div>
+      <div class="blog-hero-eyebrow">
+        <span class="hero-dot"></span>
+        <span class="blog-hero-eyebrow-text">Thread Co. Journal</span>
+      </div>
+      <h1 class="blog-hero-h1">Style stories<br>worth <span>reading</span></h1>
+      <p class="blog-hero-sub">Trend guides, brand deep-dives, sustainable fashion tips and real talk from the people behind the clothes.</p>
+      <div class="blog-hero-search">
+        <input class="blog-search-input" id="hero-search" placeholder="Search articles…" oninput="onSearch(this.value)"/>
+        <button class="btn-search" onclick="onSearch(document.getElementById('hero-search').value)">Search</button>
+      </div>
+    </div>
+    <div class="featured-card" id="featured-card" onclick="openArticle(0)"></div>
+  </div>
+</div>
+
+<div class="cat-bar" id="cat-bar"></div>
+
+<div class="blog-wrap">
+  <div class="results-row">
+    <div class="results-count"><strong id="result-count">9</strong> articles</div>
+    <select class="sort-sel" id="sort-sel" onchange="onSort(this.value)">
+      <option value="default">Sort: Latest</option>
+      <option value="popular">Most Popular</option>
+      <option value="read-time">Quick Reads</option>
+    </select>
+  </div>
+  <div class="blog-grid" id="blog-grid"></div>
+</div>
+
+<div class="nl-section">
+  <div class="nl-inner">
+    <h2 class="nl-title">Never miss a drop</h2>
+    <p class="nl-sub">Get the latest style guides, brand stories and exclusive offers straight to your inbox every week.</p>
+    <div class="nl-form">
+      <input class="nl-input" type="email" id="nl-email" placeholder="your@email.com"/>
+      <button class="btn-nl" onclick="subscribeNL()">Subscribe</button>
+    </div>
+    <div class="nl-success" id="nl-success">✓ You're in! First issue coming your way soon.</div>
+    <p class="nl-hint">No spam. Unsubscribe any time.</p>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <div class="footer-brand-mark">TC</div>
+          <span class="footer-brand-name">THREAD CO.</span>
+        </div>
+        <p class="footer-desc">Fashion that speaks before you do. Premium streetwear for every story, every body, every mood.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Shop</div>
+        <a href="shop.html" class="footer-link">Men's</a>
+        <a href="shop.html" class="footer-link">Women's</a>
+        <a href="shop.html" class="footer-link">Kids'</a>
+        <a href="shop.html" class="footer-link">Accessories</a>
+        <a href="shop.html" class="footer-link">Sale</a>
+      </div>
+      <div>
+        <div class="footer-col-title">Help</div>
+        <a href="#" class="footer-link">FAQ</a>
+        <a href="#" class="footer-link">Sizing Guide</a>
+        <a href="#" class="footer-link">Returns</a>
+        <a href="#" class="footer-link">Track Order</a>
+        <a href="#" class="footer-link">Contact Us</a>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <a href="#" class="footer-link">About Us</a>
+        <a href="blog.html" class="footer-link">Blog</a>
+        <a href="#" class="footer-link">Careers</a>
+        <a href="#" class="footer-link">Press</a>
+        <a href="#" class="footer-link">Partners</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Thread Co. All rights reserved.</span>
+      <span>Made with care for fashion lovers</span>
+    </div>
+  </div>
+</footer>
+
+<div class="modal-overlay" id="article-modal" onclick="if(event.target===this)closeArticle()">
+  <div class="modal-box" id="article-modal-box"></div>
+</div>
+
+<script>
+/* ════ THEME ════ */
+function tcToggleTheme(){
+  const next=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);
+  localStorage.setItem('tc_theme',next);
+  document.getElementById('theme-knob').textContent=next==='dark'?'🌙':'☀️';
+}
+document.getElementById('theme-toggle').addEventListener('click',tcToggleTheme);
+document.getElementById('theme-knob').textContent=
+  (localStorage.getItem('tc_theme')||'light')==='dark'?'🌙':'☀️';
+
+/* ════ ANIMATION ════ */
+function runDressingLoop(){
+  const layers=['layer-jacket','layer-shoes','layer-accessories'];
+  let i=0;
+  function step(){
+    layers.forEach(id=>document.getElementById(id)?.classList.remove('on'));
+    if(i>0)for(let j=0;j<i;j++)document.getElementById(layers[j])?.classList.add('on');
+    i++;if(i>layers.length+1)i=0;
+    setTimeout(step,i===1?700:1400);
+  }
+  step();
+}
+runDressingLoop();
+
+/* ════ ARTICLES ════ */
+const ARTICLES=[
+  {
+    id:0,cat:'Style',icon:'👗',emoji:'👗',
+    title:'How to Build a Capsule Wardrobe in 2025',
+    excerpt:'Less is genuinely more. We break down the 12 pieces every wardrobe needs — and the 20 you can skip forever.',
+    author:'Amara Solis',authorInitials:'AS',date:'Jan 12, 2025',readTime:'6 min read',views:4820,
+    tags:['capsule','minimalism','wardrobe'],
+    body:`<p>The capsule wardrobe concept has been around since the 1970s, but in 2025 it feels more relevant than ever. With fast fashion backlash growing and closet clutter a genuine source of anxiety for many, the case for owning less — and wearing it more — has never been stronger.</p>
+<h3>The Core Twelve</h3>
+<p>A true capsule wardrobe starts with twelve foundational pieces. Think one well-fitted pair of dark jeans, a structured blazer, a white button-down, a quality hoodie, and a single versatile dress. Everything should work with everything else — colour palette is the secret glue.</p>
+<blockquote>"You don't need more clothes. You need the right clothes." — Every stylist, ever.</blockquote>
+<p>At Thread Co. we've designed each collection with capsule thinking in mind. Neutral tones, quality fabrics, and silhouettes that sit outside any single trend cycle. Buy once, wear forever.</p>
+<h3>The Pieces You Can Skip</h3>
+<p>Anything with a logo larger than your thumbnail. Anything bought because it was on sale rather than because you loved it. Any item that requires a specific other item to look good. These are the wardrobe killers — they take up space and create the illusion of having nothing to wear despite owning 80 things.</p>`
+  },
+  {
+    id:1,cat:'Trends',icon:'🔥',emoji:'🔥',
+    title:'The 5 Biggest Streetwear Trends This Season',
+    excerpt:'From oversized silhouettes to technical fabrics — what\'s actually moving on the street right now.',
+    author:'Kai Nomura',authorInitials:'KN',date:'Jan 8, 2025',readTime:'4 min read',views:6310,
+    tags:['streetwear','trends','2025'],
+    body:`<p>Streetwear in 2025 is having an identity crisis — and that's exactly what makes it exciting. The rigid categories of the 2010s have dissolved. Luxury and utilitarian live on the same rack. Athletic and formal share the same fitting room. Here's what's actually moving.</p>
+<h3>1. Oversized Coach Jackets</h3>
+<p>Not the baseball variety — the longer, structured coach jacket with technical fabrics and minimal branding. Worn over everything from sweatpants to tailored trousers.</p>
+<h3>2. Muted Earth Tones</h3>
+<p>The neon era is well and truly over. Clay, slate, moss and warm off-whites dominate. These tones photograph beautifully and age gracefully — a rare combination.</p>
+<blockquote>Colour is having a quiet moment. The loudest thing in the room is the cut.</blockquote>
+<h3>3. Wide-leg Everything</h3>
+<p>From trousers to denim to joggers, the wide leg is firmly established. It's not going anywhere. If you haven't made peace with it yet, 2025 is the year.</p>`
+  },
+  {
+    id:2,cat:'Sustainability',icon:'🌿',emoji:'🌿',
+    title:'What "Sustainable Fashion" Actually Means',
+    excerpt:'We cut through the greenwashing and tell you what to actually look for when buying ethically made clothes.',
+    author:'Priya Mehta',authorInitials:'PM',date:'Jan 5, 2025',readTime:'8 min read',views:3240,
+    tags:['sustainability','ethics','guide'],
+    body:`<p>The word "sustainable" has been stretched so thin it's nearly meaningless. Brands slap it on anything — recycled labels, organic cotton blends that are 3% organic, campaigns featuring vague gestures toward nature. So what does it actually mean?</p>
+<h3>The Three Pillars</h3>
+<p>Genuine sustainability sits at the intersection of environmental impact, human welfare and economic viability. A garment made with organic cotton but sewn by underpaid workers isn't sustainable. A garment made in a fair-wage factory but shipped from the other side of the planet multiple times during production isn't either.</p>
+<blockquote>The most sustainable garment is one that gets worn 200 times, not one with an eco-label worn twice.</blockquote>
+<h3>What to Actually Look For</h3>
+<p>Third-party certifications are your friend: GOTS for organic textiles, Fair Trade for labour standards, B Corp for overall business ethics. These aren't perfect, but they're independently verified — unlike brand self-reporting.</p>
+<p>At Thread Co., our entire supply chain is documented and available on request. We don't claim perfection — we claim transparency. That's the honest version of sustainable.</p>`
+  },
+  {
+    id:3,cat:'Tips',icon:'✂️',emoji:'✂️',
+    title:'How to Make Your Clothes Last 10 Years',
+    excerpt:'Washing, storing, and repairing your wardrobe properly can dramatically extend the life of every piece.',
+    author:'Amara Solis',authorInitials:'AS',date:'Dec 28, 2024',readTime:'5 min read',views:5180,
+    tags:['care','laundry','tips'],
+    body:`<p>The single best thing you can do for your wardrobe — and for the environment — is to make your clothes last longer. The average garment is worn just 7 times before it's discarded. With basic care, that number should be 70.</p>
+<h3>Washing</h3>
+<p>Cold water, gentle cycle, inside-out. These three habits alone will extend the life of your clothes dramatically. Heat is the enemy of fabric — it breaks down fibres, fades colours, and distorts shapes. Air-drying instead of tumble-drying is the single highest-impact change most people can make.</p>
+<h3>Storage</h3>
+<p>Knitwear should be folded, not hung — hanging stretches the shoulders over time. Everything else benefits from some breathing room. Packed-too-tight wardrobes cause creasing that weakens fibres at the fold lines.</p>
+<blockquote>The wardrobe of the future is repaired, not replaced.</blockquote>
+<h3>Repairs</h3>
+<p>A loose button, a small hole, a fraying hem — these are five-minute fixes that most people treat as the end of a garment's life. Learning three basic stitches will save you thousands of dollars and dozens of items over your lifetime.</p>`
+  },
+  {
+    id:4,cat:'Brand',icon:'🏷️',emoji:'🏷️',
+    title:'The Story Behind THREAD CO.',
+    excerpt:'From a single sewing machine to 12,000 customers — the unfiltered origin story of how we got here.',
+    author:'TC Editorial',authorInitials:'TC',date:'Dec 20, 2024',readTime:'7 min read',views:8920,
+    tags:['brand','story','founders'],
+    body:`<p>Thread Co. started with a single sewing machine, a very small apartment, and an argument about whether good basics could be affordable. Spoiler: they can. But it took four years to prove it.</p>
+<h3>The Beginning</h3>
+<p>The founding team came from opposite ends of the fashion industry — one from luxury manufacturing in Milan, one from a fast-fashion supply chain in Bangladesh. The contrast between those two worlds was the founding tension: quality didn't have to be expensive, and affordable didn't have to be disposable. It just required doing things differently.</p>
+<blockquote>We didn't want to disrupt fashion. We wanted to make fashion that was actually worth buying.</blockquote>
+<h3>The Plum</h3>
+<p>If you've noticed our brand colour — the deep burgundy-plum that runs through everything — it wasn't an accident. It's the colour of the fabric remnant from the very first piece the team ever made together. A scarf that was never sold, but is still worn by one of the founders today. It felt right to make it permanent.</p>
+<h3>Where We Are Now</h3>
+<p>12,000 customers and growing. Still the same founding team. Still arguing about the right things. We think that's a good sign.</p>`
+  },
+  {
+    id:5,cat:'Culture',icon:'🎨',emoji:'🎨',
+    title:'Fashion and Identity: Dressing as Self-Expression',
+    excerpt:'What we choose to wear says something we often can\'t say in words. Exploring the psychology of getting dressed.',
+    author:'Yuki Tanaka',authorInitials:'YT',date:'Dec 14, 2024',readTime:'6 min read',views:4650,
+    tags:['identity','psychology','culture'],
+    body:`<p>Getting dressed is a daily act of self-definition. This sounds grandiose for what most of us experience as a groggy, often frustrating ritual — but the research backs it up. What we wear affects how we feel, how we perform, and how we're perceived, in ways that run deeper than aesthetics.</p>
+<h3>Enclothed Cognition</h3>
+<p>The term comes from a 2012 study that found people who wore lab coats performed better on attention tasks — but only when they believed the coat belonged to a doctor rather than a painter. Same garment, different identity, different performance. Clothes prime us for the role we believe they represent.</p>
+<blockquote>We dress not just to be seen, but to remind ourselves of who we are trying to be.</blockquote>
+<h3>Style as Language</h3>
+<p>Long before you speak a word, your clothes have communicated your subculture, your values, your economic position, your relationship with convention. Fashion is one of the few genuinely universal languages — which is exactly why it's been policed, legislated and weaponised throughout history.</p>`
+  },
+  {
+    id:6,cat:'Tips',icon:'💡',emoji:'💡',
+    title:'10 Ways to Upgrade Your Outfit Without Buying Anything',
+    excerpt:'Tucking, layering, rolling, and accessorising — small changes that make a big difference to what you already own.',
+    author:'Kai Nomura',authorInitials:'KN',date:'Dec 7, 2024',readTime:'3 min read',views:9140,
+    tags:['styling','tips','hacks'],
+    body:`<p>The most effective styling advice costs nothing. Before you add anything to your cart, try these ten techniques on what you already own.</p>
+<h3>The French Tuck</h3>
+<p>Tuck the front of your shirt into your waistband, leaving the back loose. It creates a waistline without a belt and makes almost any combination look intentional. This single technique is responsible for more "where did you get that outfit" compliments than any actual purchase.</p>
+<h3>The Roll</h3>
+<p>Roll your sleeves to just below the elbow. Roll your trouser hems twice. Both create visual breaks that draw attention to your hands and feet respectively, making the middle of your outfit look more proportional.</p>
+<blockquote>Fit is a technique, not a price tag.</blockquote>
+<h3>One Statement Piece</h3>
+<p>The rule is simple: if you wear one thing that makes a statement — a bold bag, a layered necklace, a striking belt — keep everything else quiet. The statement lands. Two statements compete. Three statements is a costume.</p>`
+  },
+  {
+    id:7,cat:'Trends',icon:'👟',emoji:'👟',
+    title:'Why Sneaker Culture Is Changing Fashion Forever',
+    excerpt:'Sneakers moved from athletic gear to fine art to everyday staple in under 40 years. Here\'s why that matters.',
+    author:'Priya Mehta',authorInitials:'PM',date:'Nov 28, 2024',readTime:'5 min read',views:7340,
+    tags:['sneakers','culture','trends'],
+    body:`<p>In 1985, Nike released the Air Jordan 1. It was banned by the NBA for violating uniform regulations. Nike paid the fines and used the controversy as marketing. What followed was the birth of sneaker culture — and the slow, irreversible casualisation of fashion at every level.</p>
+<h3>From Function to Status</h3>
+<p>Sneakers were designed for specific athletic performance. Then they became youth subculture symbols. Then they became luxury objects. Then they became investment assets. The Air Jordan 1 that retailed for $65 in 1985 sells for thousands today. The journey from sports equipment to fine art happened in a single generation.</p>
+<blockquote>Sneakers democratised luxury. And then luxury bought sneakers back.</blockquote>
+<h3>What It Changed</h3>
+<p>The most lasting effect of sneaker culture isn't the sneakers themselves — it's the permission slip it gave the rest of fashion to go casual. Suits are worn with trainers. Dresses are worn with chunky runners. The binary of formal and casual has been dissolved, and sneakers were the solvent.</p>`
+  },
+  {
+    id:8,cat:'Style',icon:'🌙',emoji:'🌙',
+    title:'Dressing for Winter Without Looking Like a Bundle',
+    excerpt:'The art of staying warm and looking sharp when the temperature drops — layering theory explained properly.',
+    author:'Amara Solis',authorInitials:'AS',date:'Nov 20, 2024',readTime:'4 min read',views:5620,
+    tags:['winter','layering','style'],
+    body:`<p>Winter dressing is a puzzle that most people solve by adding more — more layers, more volume, more bulk — until they resemble something between a duvet and a toddler who dressed themselves. The actual answer is smarter choices, not more of them.</p>
+<h3>Layering Theory</h3>
+<p>The three-layer principle: a base layer that manages moisture, a mid-layer that insulates, and an outer layer that blocks wind and water. The key is that each layer should be able to stand alone as a complete outfit. If your mid-layer looks weird without the outer layer, it's doing too much work.</p>
+<h3>Proportion is Everything</h3>
+<p>Bulky bottom, sleek top — or vice versa. Never bulky both. A chunky knit deserves slim-fitting trousers. A structured coat deserves a relaxed fit underneath. The eye needs somewhere to rest.</p>
+<blockquote>Cold is not an excuse to forget about proportion.</blockquote>
+<p>Our Thread Co. Track Legacy Set was designed specifically with layering in mind — slim enough to wear under a coat, structured enough to wear alone. It's the mid-layer that doesn't apologise for existing.</p>`
+  }
+];
+
+const ALL_CATS=['All',...[...new Set(ARTICLES.map(a=>a.cat))]];
+const CAT_COLORS={Style:'cat-Style',Trends:'cat-Trends',Culture:'cat-Culture',Sustainability:'cat-Sustainability',Brand:'cat-Brand',Tips:'cat-Tips'};
+
+let activeCategory='All',searchQuery='',sortMode='default';
+
+/* ════ FEATURED CARD ════ */
+function renderFeatured(){
+  const a=ARTICLES[4]; // Brand story as featured
+  const col=CAT_COLORS[a.cat]||'cat-Style';
+  document.getElementById('featured-card').innerHTML=`
+    <div class="featured-card-thumb">${a.icon}</div>
+    <div class="featured-card-body">
+      <span class="featured-cat-pill ${col}">${a.cat}</span>
+      <div class="featured-card-title">${a.title}</div>
+      <div class="featured-card-meta">
+        <span>${a.author}</span>
+        <span>·</span>
+        <span>${a.date}</span>
+        <span>·</span>
+        <span>${a.readTime}</span>
+      </div>
+    </div>`;
+}
+
+/* ════ CAT BAR ════ */
+function renderCatBar(){
+  document.getElementById('cat-bar').innerHTML=ALL_CATS.map(c=>`
+    <button class="cat-pill${activeCategory===c?' active':''}" onclick="setCategory('${c}')">${c}</button>`).join('');
+}
+function setCategory(c){activeCategory=c;renderGrid();}
+
+/* ════ GRID ════ */
+function getFiltered(){
+  let list=[...ARTICLES];
+  if(activeCategory!=='All')list=list.filter(a=>a.cat===activeCategory);
+  if(searchQuery)list=list.filter(a=>
+    a.title.toLowerCase().includes(searchQuery)||
+    a.excerpt.toLowerCase().includes(searchQuery)||
+    a.cat.toLowerCase().includes(searchQuery)||
+    a.tags.some(t=>t.includes(searchQuery))
+  );
+  if(sortMode==='popular')list.sort((a,b)=>b.views-a.views);
+  else if(sortMode==='read-time')list.sort((a,b)=>parseInt(a.readTime)-parseInt(b.readTime));
+  return list;
+}
+
+function renderGrid(){
+  renderCatBar();
+  const list=getFiltered();
+  document.getElementById('result-count').textContent=list.length;
+  if(list.length===0){
+    document.getElementById('blog-grid').innerHTML=`
+      <div class="empty-blog">
+        <div class="empty-icon">📝</div>
+        <div class="empty-title">No articles found</div>
+        <p class="empty-sub">Try a different search term or category.</p>
+      </div>`;
+    return;
+  }
+  document.getElementById('blog-grid').innerHTML=list.map(a=>{
+    const col=CAT_COLORS[a.cat]||'cat-Style';
+    return`<div class="bcard" onclick="openArticle(${a.id})">
+      <div class="bcard-thumb" style="background:var(--bg-sunken)">${a.emoji}</div>
+      <div class="bcard-body">
+        <span class="bcard-cat-pill ${col}">${a.cat}</span>
+        <div class="bcard-title">${a.title}</div>
+        <p class="bcard-excerpt">${a.excerpt}</p>
+        <div class="bcard-meta">
+          <div class="bcard-author">
+            <div class="bcard-avatar">${a.authorInitials}</div>
+            <span>${a.author}</span>
+          </div>
+          <span class="read-more">${a.readTime} →</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function onSearch(v){searchQuery=v.trim().toLowerCase();renderGrid();}
+function onSort(v){sortMode=v;renderGrid();}
+
+/* ════ ARTICLE MODAL ════ */
+function openArticle(id){
+  const a=ARTICLES[id];if(!a)return;
+  const col=CAT_COLORS[a.cat]||'cat-Style';
+  document.getElementById('article-modal-box').innerHTML=`
+    <button class="modal-close" onclick="closeArticle()">✕</button>
+    <span class="modal-cat ${col}">${a.cat}</span>
+    <div class="modal-title">${a.title}</div>
+    <div class="modal-meta">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="modal-author-avatar">${a.authorInitials}</div>
+        <span>${a.author}</span>
+      </div>
+      <span>·</span><span>${a.date}</span>
+      <span>·</span><span>${a.readTime}</span>
+      <span>·</span><span>${a.views.toLocaleString()} views</span>
+    </div>
+    <div class="modal-body">${a.body}</div>
+    <div class="modal-footer">
+      <div class="modal-tags">${a.tags.map(t=>`<span class="tag">#${t}</span>`).join('')}</div>
+      <button class="btn-shop-article" onclick="location.href='shop.html'">Shop the Look →</button>
+    </div>`;
+  document.getElementById('article-modal').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function closeArticle(){
+  document.getElementById('article-modal').classList.remove('show');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeArticle();});
+
+/* ════ NEWSLETTER ════ */
+function subscribeNL(){
+  const email=document.getElementById('nl-email').value.trim();
+  if(!email||!email.includes('@')){showToast('Enter a valid email','warn');return;}
+  document.getElementById('nl-success').style.display='flex';
+  document.getElementById('nl-email').value='';
+  showToast('Subscribed — welcome aboard!');
+}
+
+/* ════ NAV COUNTS ════ */
+function updateNavCounts(){
+  const cart=JSON.parse(localStorage.getItem('tc_cart')||'[]');
+  const wl=JSON.parse(localStorage.getItem('tc_wishlist')||'[]');
+  const cc=document.getElementById('cart-count'),wc=document.getElementById('wl-count');
+  const n=cart.reduce((a,b)=>a+b.qty,0);
+  if(cc){cc.textContent=n;cc.style.display=n>0?'flex':'none';}
+  if(wc){wc.textContent=wl.length;wc.style.display=wl.length>0?'flex':'none';}
+  const u=JSON.parse(localStorage.getItem('tc_user')||'null');
+  const ub=document.getElementById('nav-user-btn');
+  if(ub&&u)ub.textContent='Hi, '+u.name.split(' ')[0];
+}
+
+/* ════ TOAST ════ */
+function showToast(msg,type='ok'){
+  let t=document.getElementById('tc-toast');
+  if(!t){t=document.createElement('div');t.id='tc-toast';t.className='toast';document.body.appendChild(t);}
+  t.textContent=msg;t.style.background=type==='warn'?'#8a3838':'#3f6b48';
+  t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+/* ════ INIT ════ */
+renderFeatured();
+renderCatBar();
+renderGrid();
+updateNavCounts();
+
+window.addEventListener('load',()=>{
+  setTimeout(()=>document.getElementById('page-loader').classList.add('hidden'),400);
+});
+</script>
+</body>
+</html>

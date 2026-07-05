@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>THREAD CO. – Fashion Forward | Home</title>
+<meta name="description" content="THREAD CO. — Premium fashion for every body. Shop the latest streetwear, dresses, jackets and accessories. Free shipping on orders over $75."/>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png"/>
+<link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png"/>
+<link rel="shortcut icon" href="favicon.ico"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+
+<script>
+(function(){
+  var saved = localStorage.getItem('tc_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+})();
+</script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --plum:#5f0f40;
+  --plum-light:#7a2f5a;
+  --plum-pale:#9c4d78;
+  --accent-soft:rgba(95,15,64,.08);
+  --accent-glow:rgba(95,15,64,.2);
+
+  --bg:#faf9f8;
+  --bg-elevated:#ffffff;
+  --bg-sunken:#f3eef1;
+  --bg-hero:#1a0e16;
+  --text:#1a1015;
+  --text-muted:#4a4147;
+  --text-faint:#6b6268;
+  --border:#e3dadf;
+  --border-strong:#cdc0c7;
+  --nav-bg:rgba(250,249,248,.9);
+  --nav-text:#1a1015;
+  --nav-text-muted:#4a4147;
+  --card-shadow:0 1px 3px rgba(20,10,16,.05);
+  --card-shadow-hover:0 10px 26px rgba(20,10,16,.09);
+  --skeleton-base:#ece3e8;
+  --skeleton-shine:#f7f1f4;
+  --toggle-bg:#1a1015;
+  --toggle-icon:#9c4d78;
+  --footer-bg:#1a0e16;
+}
+[data-theme="dark"]{
+  --bg:#150d12;
+  --bg-elevated:#1e1318;
+  --bg-sunken:#0e090c;
+  --bg-hero:#0a0508;
+  --text:#f5f1f3;
+  --text-muted:#c4b9c0;
+  --text-faint:#8e8389;
+  --border:#2a1f25;
+  --border-strong:#3e313a;
+  --nav-bg:rgba(21,13,18,.88);
+  --nav-text:#f5f1f3;
+  --nav-text-muted:#c4b9c0;
+  --card-shadow:0 1px 3px rgba(0,0,0,.3);
+  --card-shadow-hover:0 12px 30px rgba(0,0,0,.4);
+  --skeleton-base:#201620;
+  --skeleton-shine:#2b1e29;
+  --toggle-bg:#b97fa0;
+  --toggle-icon:#150d12;
+  --footer-bg:#0a0508;
+}
+
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;transition:background .3s ease,color .3s ease;position:relative}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;font-family:inherit;border:none;background:none}
+img{display:block}
+::selection{background:var(--plum);color:#fff}
+
+#site-bg-anim{position:fixed;inset:0;z-index:-1;overflow:hidden;background:var(--bg);transition:background .3s ease}
+#site-bg-anim svg{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:min(900px,90vw);height:auto;opacity:.22}
+[data-theme="dark"] #site-bg-anim svg{opacity:.28}
+#figure path,#figure circle{stroke:var(--plum);stroke-width:1.5;stroke-opacity:.3}
+.dress-layer path,.dress-layer rect,.dress-layer ellipse{filter:drop-shadow(0 0 12px var(--accent-glow))}
+.dress-layer{opacity:0;transition:opacity 1.2s ease}
+.dress-layer.on{opacity:1}
+
+#page-loader{position:fixed;inset:0;z-index:10000;background:var(--bg);display:flex;align-items:center;justify-content:center;transition:opacity .45s ease,visibility .45s ease}
+#page-loader.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loader-logo{display:flex;flex-direction:column;align-items:center;gap:16px}
+.loader-mark{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--plum),var(--plum-light));display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:17px;animation:loaderFade 1.6s ease-in-out infinite}
+@keyframes loaderFade{0%,100%{opacity:1}50%{opacity:.5}}
+.loader-bar{width:110px;height:2px;background:var(--border);border-radius:2px;overflow:hidden;position:relative}
+.loader-bar::after{content:'';position:absolute;inset:0;width:35%;background:var(--plum);border-radius:2px;animation:loaderSlide 1.3s ease-in-out infinite}
+@keyframes loaderSlide{0%{transform:translateX(-100%)}100%{transform:translateX(330%)}}
+
+.skel{background:linear-gradient(100deg,var(--skeleton-base) 30%,var(--skeleton-shine) 50%,var(--skeleton-base) 70%);background-size:200% 100%;animation:skelShine 1.8s ease-in-out infinite;border-radius:8px}
+@keyframes skelShine{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skel-text{height:13px;margin-bottom:7px}
+
+.theme-toggle{position:relative;width:48px;height:26px;border-radius:14px;background:var(--toggle-bg);cursor:pointer;flex-shrink:0;transition:background .3s ease;display:flex;align-items:center;padding:3px}
+.theme-toggle-knob{width:20px;height:20px;border-radius:50%;background:var(--toggle-icon);display:flex;align-items:center;justify-content:center;font-size:10px;transition:transform .3s ease;transform:translateX(0)}
+[data-theme="dark"] .theme-toggle-knob{transform:translateX(22px)}
+
+.nav{position:fixed;top:0;left:0;right:0;z-index:900;height:64px;display:flex;align-items:center;padding:0 32px;gap:18px;background:var(--nav-bg);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);transition:background .3s ease,border-color .3s ease}
+.nav-logo{display:flex;align-items:center;gap:9px;flex-shrink:0;cursor:pointer}
+.nav-logo-mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--plum),var(--plum-light));display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:12px;transition:transform .2s ease}
+.nav-logo:hover .nav-logo-mark{transform:scale(1.05)}
+.nav-logo-text{color:var(--nav-text);font-weight:700;font-size:14px;letter-spacing:2.5px}
+.nav-links{display:flex;align-items:center;gap:2px;flex:1;padding-left:20px}
+.nav-link{color:var(--nav-text-muted);font-size:13px;font-weight:500;padding:7px 13px;border-radius:7px;transition:color .2s,background .2s;letter-spacing:.2px}
+.nav-link:hover{color:var(--nav-text);background:var(--bg-sunken)}
+.nav-link.active{color:var(--plum)}
+.nav-right{display:flex;align-items:center;gap:8px;margin-left:auto}
+.nav-icon{color:var(--nav-text-muted);font-size:17px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:9px;position:relative;transition:color .2s,background .2s}
+.nav-icon:hover{color:var(--nav-text);background:var(--bg-sunken)}
+.nav-badge{position:absolute;top:3px;right:3px;background:var(--plum);color:#fff;font-size:9px;font-weight:700;border-radius:50%;width:14px;height:14px;display:flex;align-items:center;justify-content:center}
+.nav-cta{background:var(--plum);border-radius:8px;color:#fff;font-weight:600;font-size:13px;padding:8px 16px;transition:opacity .2s,transform .15s;letter-spacing:.2px}
+.nav-cta:hover{opacity:.9;transform:translateY(-1px)}
+.nav-cta:active{transform:translateY(0)}
+
+.hero{min-height:92vh;background:var(--bg-hero);display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;padding-top:64px}
+.hero-bg{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse 60% 50% at 18% 55%,rgba(95,15,64,.12) 0%,transparent 60%),radial-gradient(ellipse 45% 40% at 82% 25%,rgba(138,61,110,.08) 0%,transparent 55%);pointer-events:none}
+.hero-inner{max-width:1240px;margin:0 auto;width:100%;padding:0 40px;display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center;position:relative;z-index:2}
+.hero-text-col{position:relative;z-index:3}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(95,15,64,.1);border:1px solid rgba(95,15,64,.24);border-radius:20px;padding:6px 14px;margin-bottom:24px}
+.hero-dot{width:6px;height:6px;background:var(--plum);border-radius:50%;animation:blink 2.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.hero-eyebrow-text{color:var(--plum-pale);font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase}
+.hero-h1{font-family:'Playfair Display',serif;color:#f7f3f5;font-size:58px;line-height:1.06;margin-bottom:20px;font-weight:700}
+.hero-slide-word{display:inline-block;color:var(--plum-pale);transition:opacity .35s ease}
+.hero-sub{color:rgba(247,243,245,.85);font-size:16px;line-height:1.75;max-width:430px;margin-bottom:34px;font-weight:300}
+.hero-actions{display:flex;gap:12px;margin-bottom:44px}
+.btn-hero-primary{background:var(--plum);color:#fff;border-radius:11px;font-weight:600;font-size:15px;padding:14px 30px;letter-spacing:.2px;transition:opacity .2s,transform .15s}
+.btn-hero-primary:hover{opacity:.9;transform:translateY(-1px)}
+.btn-hero-primary:active{transform:translateY(0)}
+.btn-hero-secondary{background:transparent;border:1.4px solid rgba(247,243,245,.22);color:#f7f3f5;border-radius:11px;font-weight:600;font-size:15px;padding:13px 26px;transition:border-color .2s}
+.btn-hero-secondary:hover{border-color:rgba(247,243,245,.5)}
+.hero-stats{display:flex;gap:32px}
+.hero-stat-n{color:#f7f3f5;font-weight:700;font-size:23px;font-family:'Playfair Display',serif;margin-bottom:2px}
+.hero-stat-l{color:rgba(247,243,245,.6);font-size:11px;letter-spacing:.4px;font-weight:500}
+
+.hero-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.hcard{background:rgba(247,243,245,.04);border:1px solid rgba(247,243,245,.08);border-radius:16px;padding:18px;cursor:pointer;transition:transform .2s ease,background .2s ease,border-color .2s ease}
+.hcard:hover{background:rgba(247,243,245,.07);border-color:rgba(95,15,64,.3);transform:translateY(-3px)}
+.hcard:nth-child(even){margin-top:16px}
+.hcard-img{display:flex;justify-content:center;align-items:center;height:72px;margin-bottom:9px}
+.hcard-name{color:#f7f3f5;font-size:12px;font-weight:600;margin-bottom:3px}
+.hcard-price{color:var(--plum-pale);font-size:13px;font-weight:700}
+
+.scroll-cue{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:7px;z-index:2;cursor:pointer;opacity:.7;transition:opacity .2s}
+.scroll-cue:hover{opacity:1}
+.scroll-cue-text{color:rgba(247,243,245,.6);font-size:10px;letter-spacing:1.4px;text-transform:uppercase}
+.scroll-cue-mouse{width:20px;height:32px;border:1.4px solid rgba(247,243,245,.28);border-radius:11px;position:relative}
+.scroll-cue-dot{width:3px;height:7px;background:var(--plum-pale);border-radius:2px;position:absolute;top:6px;left:50%;transform:translateX(-50%);animation:scrollDot 1.8s ease-in-out infinite}
+@keyframes scrollDot{0%{opacity:1;top:6px}70%{opacity:0;top:16px}100%{opacity:0;top:6px}}
+
+.section{padding:76px 40px;position:relative;z-index:1}
+.section-inner{max-width:1240px;margin:0 auto}
+.section-row{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:38px;flex-wrap:wrap;gap:14px}
+.section-title{font-family:'Playfair Display',serif;font-size:34px;font-weight:700;color:var(--text);line-height:1.15;margin-bottom:6px}
+.section-sub{color:var(--text-muted);font-size:14px;font-weight:400}
+.bg-sunken{background:var(--bg-sunken)}
+.bg-base{background:transparent}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:none}
+
+.cats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.cat-card{background:var(--bg-elevated);border:1px solid var(--border);border-radius:16px;padding:24px 14px;text-align:center;cursor:pointer;box-shadow:var(--card-shadow);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.cat-card:hover{transform:translateY(-3px);box-shadow:var(--card-shadow-hover);border-color:var(--border-strong)}
+.cat-icon-wrap{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:26px;transition:transform .2s ease}
+.cat-card:hover .cat-icon-wrap{transform:scale(1.06)}
+.cat-name{font-weight:600;font-size:13px;margin-bottom:3px;color:var(--text)}
+.cat-arrow{font-size:11px;font-weight:600}
+
+.products-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.products-4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.pcard{background:var(--bg-elevated);border-radius:16px;overflow:hidden;border:1px solid var(--border);cursor:pointer;position:relative;box-shadow:var(--card-shadow);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.pcard:hover{transform:translateY(-3px);box-shadow:var(--card-shadow-hover);border-color:var(--border-strong)}
+.pcard-thumb{padding:24px 18px 14px;min-height:150px;display:flex;align-items:center;justify-content:center;background:var(--bg-sunken)}
+.pcard-thumb svg{transition:transform .25s ease}
+.pcard:hover .pcard-thumb svg{transform:scale(1.04)}
+.pcard-badge{position:absolute;top:11px;left:11px;z-index:2}
+.pcard-wish{position:absolute;top:11px;right:11px;z-index:2;background:var(--bg-elevated);border:none;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 2px 8px rgba(0,0,0,.1);color:var(--text-faint);transition:color .2s ease,transform .2s ease}
+.pcard-wish:hover{color:var(--plum);transform:scale(1.1)}
+.pcard-wish.on{color:var(--plum)}
+.pcard-body{padding:11px 15px 16px}
+.pcard-cat{font-size:10px;color:var(--text-faint);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.pcard-name{font-size:13px;font-weight:600;color:var(--text);line-height:1.3;margin-bottom:7px}
+.pcard-stars{display:flex;align-items:center;gap:5px;margin-bottom:7px}
+.stars{display:inline-flex;gap:1px}
+.star{color:#a8763f;font-size:11px}
+.star.e{color:var(--border-strong)}
+.pcard-rcount{font-size:11px;color:var(--text-faint)}
+.pcard-stock{font-size:10px;color:var(--plum);font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:4px}
+.pcard-stock-pulse{width:5px;height:5px;border-radius:50%;background:var(--plum);animation:blink 1.6s infinite}
+.pcard-foot{display:flex;justify-content:space-between;align-items:center}
+.pcard-price{font-size:15px;font-weight:700;color:var(--text)}
+.pcard-orig{font-size:11px;color:var(--text-faint);text-decoration:line-through;margin-left:5px}
+.btn-add{background:var(--plum);border-radius:7px;color:#fff;font-size:11px;font-weight:600;padding:7px 13px;transition:opacity .2s,transform .15s}
+.btn-add:hover{opacity:.9}
+.btn-add:active{transform:scale(.95)}
+.btn-add.added{background:#5a9e6f}
+.badge{display:inline-block;font-size:9px;font-weight:700;padding:3px 7px;border-radius:5px;letter-spacing:.4px;text-transform:uppercase}
+.badge-Hot{background:#f0dde9;color:#7a2c5c}
+.badge-New{background:#dde8dd;color:#3f6b48}
+.badge-Sale{background:#f3dada;color:#8a3838}
+[data-theme="dark"] .badge-Hot{background:#391f30;color:#d896bc}
+[data-theme="dark"] .badge-New{background:#1d2e1f;color:#7fb98c}
+[data-theme="dark"] .badge-Sale{background:#3a1d1d;color:#cf8585}
+
+.pcard-skel{background:var(--bg-elevated);border-radius:16px;border:1px solid var(--border);overflow:hidden}
+.pcard-skel .skel-thumb{height:150px;border-radius:0}
+.pcard-skel .skel-inner{padding:13px 15px 16px}
+
+.promo{background:linear-gradient(135deg,var(--bg-hero),#2b1624);border-radius:20px;padding:44px 52px;display:flex;justify-content:space-between;align-items:center;gap:20px;margin:0 40px;position:relative;z-index:1}
+.promo-title{font-family:'Playfair Display',serif;color:#f7f3f5;font-size:28px;font-weight:700;margin-bottom:6px}
+.promo-title span{color:var(--plum-pale)}
+.promo-sub{color:rgba(247,243,245,.68);font-size:14px}
+.btn-promo{background:var(--plum);border-radius:11px;color:#fff;font-weight:600;font-size:15px;padding:15px 32px;white-space:nowrap;transition:opacity .2s,transform .15s}
+.btn-promo:hover{opacity:.9;transform:translateY(-1px)}
+.btn-promo:active{transform:translateY(0)}
+
+.trust{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;padding:46px 40px;max-width:1240px;margin:0 auto;text-align:center;position:relative;z-index:1}
+.trust-icon{font-size:28px;margin-bottom:10px;display:inline-block}
+.trust-title{font-weight:600;font-size:13px;margin-bottom:3px;color:var(--text)}
+.trust-sub{font-size:12px;color:var(--text-muted)}
+
+.newsletter{background:var(--bg-hero);padding:68px 40px;position:relative;z-index:1}
+.newsletter-inner{max-width:500px;margin:0 auto;text-align:center}
+.nl-title{font-family:'Playfair Display',serif;color:#f7f3f5;font-size:32px;font-weight:700;margin-bottom:9px}
+.nl-sub{color:rgba(247,243,245,.68);font-size:14px;line-height:1.7;margin-bottom:26px;font-weight:300}
+.nl-form{display:flex;gap:9px}
+.nl-input{flex:1;background:rgba(247,243,245,.06);border:1.4px solid rgba(247,243,245,.12);border-radius:10px;color:#f7f3f5;font-size:14px;padding:13px 16px;font-family:inherit;outline:none;transition:border-color .2s}
+.nl-input:focus{border-color:rgba(95,15,64,.45)}
+.btn-nl{background:var(--plum);border-radius:10px;color:#fff;font-weight:600;font-size:13px;padding:13px 22px;white-space:nowrap;transition:opacity .2s}
+.btn-nl:hover{opacity:.9}
+.nl-hint{color:rgba(247,243,245,.4);font-size:11px;margin-top:11px}
+.nl-success{display:none;align-items:center;gap:7px;justify-content:center;color:#7fb98c;font-weight:600;font-size:13px;margin-top:12px}
+
+footer{background:var(--footer-bg);padding:48px 40px 22px;position:relative;z-index:1}
+.footer-inner{max-width:1240px;margin:0 auto}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:44px;margin-bottom:36px}
+.footer-brand{display:flex;align-items:center;gap:9px;margin-bottom:14px}
+.footer-brand-mark{width:28px;height:28px;background:linear-gradient(135deg,var(--plum),var(--plum-light));border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:11px}
+.footer-brand-name{color:#f7f3f5;font-weight:700;font-size:13px;letter-spacing:2.5px}
+.footer-desc{color:rgba(247,243,245,.5);font-size:12px;line-height:1.75;max-width:230px}
+.footer-col-title{color:#f7f3f5;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:14px}
+.footer-link{display:block;color:rgba(247,243,245,.52);font-size:12px;margin-bottom:9px;transition:color .2s}
+.footer-link:hover{color:rgba(247,243,245,.85)}
+.footer-bottom{border-top:1px solid rgba(247,243,245,.1);padding-top:18px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:rgba(247,243,245,.35);flex-wrap:wrap;gap:8px}
+
+.toast{position:fixed;bottom:22px;right:22px;z-index:9999;padding:12px 19px;border-radius:10px;font-weight:600;font-size:13px;color:#fff;box-shadow:0 8px 22px rgba(0,0,0,.18);transition:opacity .25s,transform .25s;pointer-events:none;display:flex;align-items:center;gap:7px;transform:translateY(14px);opacity:0}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:1100px){
+  .hero-inner{grid-template-columns:1fr;text-align:center}
+  .hero-card-grid{display:none}
+  .cats{grid-template-columns:repeat(3,1fr)}
+  .products-3,.products-4{grid-template-columns:repeat(2,1fr)}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="site-bg-anim">
+  <svg id="dress-svg" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
+    <g id="figure">
+      <circle cx="200" cy="70" r="32" fill="var(--plum)"/>
+      <path d="M160 110 Q200 100 240 110 L250 280 Q200 295 150 280 Z" fill="var(--plum)"/>
+      <path d="M160 280 L155 480 L185 480 L195 300 Z" fill="var(--plum)"/>
+      <path d="M240 280 L245 480 L215 480 L205 300 Z" fill="var(--plum)"/>
+      <path d="M160 120 L120 220 L140 230 L168 140 Z" fill="var(--plum)"/>
+      <path d="M240 120 L280 220 L260 230 L232 140 Z" fill="var(--plum)"/>
+    </g>
+
+    <g class="dress-layer" id="layer-jacket">
+      <path d="M150 105 Q200 92 250 105 L262 200 L235 212 L235 290 L165 290 L165 212 L138 200 Z" fill="var(--plum-light)"/>
+      <text x="200" y="250" text-anchor="middle" font-family="DM Sans" font-size="11" font-weight="700" fill="#fff" opacity=".85" letter-spacing="1.5">THREAD CO.</text>
+    </g>
+
+    <g class="dress-layer" id="layer-shoes">
+      <ellipse cx="168" cy="488" rx="26" ry="11" fill="var(--plum-light)"/>
+      <ellipse cx="232" cy="488" rx="26" ry="11" fill="var(--plum-light)"/>
+      <text x="168" y="491" text-anchor="middle" font-family="DM Sans" font-size="6" font-weight="700" fill="#fff" opacity=".8">TC</text>
+      <text x="232" y="491" text-anchor="middle" font-family="DM Sans" font-size="6" font-weight="700" fill="#fff" opacity=".8">TC</text>
+    </g>
+
+    <g class="dress-layer" id="layer-accessories">
+      <path d="M168 48 Q200 30 232 48 Q236 60 230 64 L170 64 Q164 60 168 48 Z" fill="var(--plum-light)"/>
+      <rect x="185" y="38" width="30" height="8" rx="3" fill="#fff" opacity=".15"/>
+      <rect x="255" y="230" width="38" height="50" rx="8" fill="var(--plum-light)"/>
+      <text x="274" y="259" text-anchor="middle" font-family="DM Sans" font-size="8" font-weight="700" fill="#fff" opacity=".85">TC</text>
+    </g>
+  </svg>
+</div>
+
+<div id="page-loader">
+  <div class="loader-logo">
+    <div class="loader-mark">TC</div>
+    <div class="loader-bar"></div>
+  </div>
+</div>
+
+<nav class="nav" id="navbar">
+  <div class="nav-logo" onclick="location.href='index.html'">
+    <div class="nav-logo-mark">TC</div>
+    <span class="nav-logo-text">THREAD CO.</span>
+  </div>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link active">Home</a>
+    <a href="shop.html" class="nav-link">Shop</a>
+    <a href="blog.html" class="nav-link">Blog</a>
+  </div>
+  <div class="nav-right">
+    <button class="theme-toggle" id="theme-toggle" title="Toggle dark/light mode" aria-label="Toggle theme">
+      <span class="theme-toggle-knob" id="theme-knob">☀️</span>
+    </button>
+    <button class="nav-icon" title="Search" onclick="location.href='shop.html'">🔍</button>
+    <button class="nav-icon" title="Wishlist" onclick="location.href='wishlist.html'">
+      ♡<span class="nav-badge" id="wl-count" style="display:none">0</span>
+    </button>
+    <button class="nav-icon" title="Cart" onclick="location.href='cart.html'">
+      🛒<span class="nav-badge" id="cart-count" style="display:none">0</span>
+    </button>
+    <button class="nav-cta" id="nav-user-btn" onclick="location.href='auth.html'">Sign In</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner">
+    <div class="hero-text-col">
+      <div class="hero-eyebrow">
+        <span class="hero-dot"></span>
+        <span class="hero-eyebrow-text">New Season Drop</span>
+      </div>
+      <h1 class="hero-h1">Wear Your<br><span class="hero-slide-word" id="hero-word">Bold Story</span></h1>
+      <p class="hero-sub">Fashion that speaks before you do. Discover pieces that blend streetwear energy with everyday elegance — for every body, every mood.</p>
+      <div class="hero-actions">
+        <button class="btn-hero-primary" onclick="location.href='shop.html'">Shop Now →</button>
+        <button class="btn-hero-secondary" onclick="location.href='shop.html'">View Lookbook</button>
+      </div>
+      <div class="hero-stats">
+        <div><div class="hero-stat-n" data-count="12000" data-suffix="+">0</div><div class="hero-stat-l">Happy Customers</div></div>
+        <div><div class="hero-stat-n" data-count="500" data-suffix="+">0</div><div class="hero-stat-l">Style Pieces</div></div>
+        <div><div class="hero-stat-n" data-decimal="4.9" data-suffix="★">0</div><div class="hero-stat-l">Avg Rating</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card-grid" id="hero-cards"></div>
+    </div>
+  </div>
+  <div class="scroll-cue" onclick="document.querySelector('.bg-sunken').scrollIntoView({behavior:'smooth'})">
+    <span class="scroll-cue-text">Scroll</span>
+    <div class="scroll-cue-mouse"><div class="scroll-cue-dot"></div></div>
+  </div>
+</section>
+
+<section class="section bg-sunken">
+  <div class="section-inner">
+    <div class="section-row">
+      <div>
+        <h2 class="section-title reveal">Shop by Category</h2>
+        <p class="section-sub reveal">Find your perfect style in every section</p>
+      </div>
+    </div>
+    <div class="cats reveal" id="cats-grid"></div>
+  </div>
+</section>
+
+<section class="section bg-base">
+  <div class="section-inner">
+    <div class="section-row reveal">
+      <div>
+        <h2 class="section-title">Hot Right Now</h2>
+        <p class="section-sub">Our most-loved pieces this season</p>
+      </div>
+      <button class="btn-primary" style="padding:10px 22px;font-size:13px" onclick="location.href='shop.html'">View All</button>
+    </div>
+    <div class="products-3 reveal" id="hot-grid"></div>
+  </div>
+</section>
+
+<div class="reveal">
+  <div class="promo">
+    <div>
+      <p class="promo-title">Use code <span>THREAD20</span></p>
+      <p class="promo-sub">Get 20% off your first order. Limited time offer!</p>
+    </div>
+    <button class="btn-promo" onclick="location.href='shop.html'">Claim Offer →</button>
+  </div>
+</div>
+
+<section class="section bg-sunken">
+  <div class="section-inner">
+    <div class="section-row reveal">
+      <div>
+        <h2 class="section-title">New Arrivals</h2>
+        <p class="section-sub">Fresh drops just landed</p>
+      </div>
+      <button class="btn-secondary" style="padding:10px 22px;font-size:13px" onclick="location.href='shop.html'">See All</button>
+    </div>
+    <div class="products-4 reveal" id="new-grid"></div>
+  </div>
+</section>
+
+<div class="reveal">
+  <div class="trust">
+    <div><div class="trust-icon">🚚</div><div class="trust-title">Free Shipping</div><div class="trust-sub">On orders over $75</div></div>
+    <div><div class="trust-icon">↩️</div><div class="trust-title">Easy Returns</div><div class="trust-sub">30-day return policy</div></div>
+    <div><div class="trust-icon">🔒</div><div class="trust-title">Secure Payment</div><div class="trust-sub">256-bit SSL + 2FA</div></div>
+    <div><div class="trust-icon">⭐</div><div class="trust-title">Quality Promise</div><div class="trust-sub">100% authentic products</div></div>
+  </div>
+</div>
+
+<section class="newsletter">
+  <div class="newsletter-inner reveal">
+    <h2 class="nl-title">Stay in the Loop</h2>
+    <p class="nl-sub">Get early access to drops, exclusive discounts, and style guides straight to your inbox.</p>
+    <div class="nl-form">
+      <input class="nl-input" type="email" id="nl-email" placeholder="Enter your email address"/>
+      <button class="btn-nl" onclick="subscribeNewsletter()">Subscribe</button>
+    </div>
+    <div class="nl-success" id="nl-success">✓ You're subscribed! Welcome to the club</div>
+    <p class="nl-hint">No spam, ever. Unsubscribe anytime.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <div class="footer-brand-mark">TC</div>
+          <span class="footer-brand-name">THREAD CO.</span>
+        </div>
+        <p class="footer-desc">Fashion that speaks before you do. Premium streetwear for every story, every body, every mood.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Shop</div>
+        <a href="shop.html" class="footer-link">Men's</a>
+        <a href="shop.html" class="footer-link">Women's</a>
+        <a href="shop.html" class="footer-link">Kids'</a>
+        <a href="shop.html" class="footer-link">Accessories</a>
+        <a href="shop.html" class="footer-link">Sale</a>
+      </div>
+      <div>
+        <div class="footer-col-title">Help</div>
+        <a href="#" class="footer-link">FAQ</a>
+        <a href="#" class="footer-link">Sizing Guide</a>
+        <a href="#" class="footer-link">Returns</a>
+        <a href="#" class="footer-link">Track Order</a>
+        <a href="#" class="footer-link">Contact Us</a>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <a href="#" class="footer-link">About Us</a>
+        <a href="blog.html" class="footer-link">Blog</a>
+        <a href="#" class="footer-link">Careers</a>
+        <a href="#" class="footer-link">Press</a>
+        <a href="#" class="footer-link">Partners</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Thread Co. All rights reserved.</span>
+      <span>Made with care for fashion lovers</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function tcToggleTheme(){
+  const cur=document.documentElement.getAttribute('data-theme');
+  const next=cur==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);
+  localStorage.setItem('tc_theme',next);
+  tcUpdateToggleIcon(next);
+}
+function tcUpdateToggleIcon(theme){
+  const knob=document.getElementById('theme-knob');
+  if(knob)knob.textContent=theme==='dark'?'🌙':'☀️';
+}
+document.getElementById('theme-toggle').addEventListener('click',tcToggleTheme);
+tcUpdateToggleIcon(document.documentElement.getAttribute('data-theme')||'light');
+
+function runDressingLoop(){
+  const layers=['layer-jacket','layer-shoes','layer-accessories'];
+  let i=0;
+  function step(){
+    layers.forEach(id=>document.getElementById(id)?.classList.remove('on'));
+    if(i>0){
+      for(let j=0;j<i;j++){
+        document.getElementById(layers[j])?.classList.add('on');
+      }
+    }
+    i++;
+    if(i>layers.length+1){i=0;}
+    setTimeout(step, i===1?700:1400);
+  }
+  step();
+}
+runDressingLoop();
+
+const PRODUCTS=[
+  {id:1,name:"Urban Drift Hoodie",price:89,orig:120,cat:"Men's",badge:"Hot",stock:3,rating:4.8,reviews:124,colors:["#3a3835","#5f0f40","#5d7e93"],sizes:["S","M","L","XL","XXL"],img:"hoodie"},
+  {id:2,name:"Bloom Wrap Dress",price:65,orig:65,cat:"Women's",badge:"New",stock:12,rating:4.6,reviews:89,colors:["#8a3d6e","#b97fa0","#5e9485"],sizes:["XS","S","M","L","XL"],img:"dress"},
+  {id:3,name:"Neon Pulse Tee",price:35,orig:50,cat:"Unisex",badge:"Sale",stock:28,rating:4.4,reviews:203,colors:["#4f9d85","#d6b35e","#5f0f40"],sizes:["XS","S","M","L","XL","XXL"],img:"tee"},
+  {id:4,name:"Cloud Nine Joggers",price:72,orig:72,cat:"Unisex",badge:"New",stock:8,rating:4.9,reviews:67,colors:["#9bbcc0","#5d7e93","#36475a"],sizes:["S","M","L","XL"],img:"joggers"},
+  {id:5,name:"Mini Explorer Jacket",price:95,orig:130,cat:"Kids'",badge:"Sale",stock:5,rating:4.7,reviews:41,colors:["#8a3d6e","#5f0f40","#2f5167"],sizes:["3-4Y","5-6Y","7-8Y","9-10Y"],img:"jacket"},
+  {id:6,name:"Velvet Rush Blazer",price:155,orig:210,cat:"Women's",badge:"Hot",stock:2,rating:4.9,reviews:58,colors:["#5f0f40","#3b2c4a","#2f4f3f"],sizes:["XS","S","M","L"],img:"blazer"},
+  {id:7,name:"Grid Street Shorts",price:42,orig:42,cat:"Men's",badge:null,stock:19,rating:4.3,reviews:156,colors:["#46443f","#727069","#bdb5a5"],sizes:["S","M","L","XL","XXL"],img:"shorts"},
+  {id:8,name:"Arch Cap",price:28,orig:38,cat:"Accessories",badge:"Sale",stock:45,rating:4.5,reviews:312,colors:["#2c2a27","#e9e6e0","#5f0f40"],sizes:["One Size"],img:"cap"},
+  {id:9,name:"Sunrise Crop Top",price:38,orig:38,cat:"Women's",badge:"New",stock:22,rating:4.6,reviews:94,colors:["#d6a44e","#8a3d6e","#33495a"],sizes:["XS","S","M","L"],img:"crop"},
+  {id:10,name:"Track Legacy Set",price:118,orig:160,cat:"Men's",badge:"Hot",stock:7,rating:4.8,reviews:73,colors:["#3b3d4a","#5f0f40","#7c8290"],sizes:["S","M","L","XL","XXL"],img:"trackset"},
+  {id:11,name:"Tiny Threads Dungaree",price:48,orig:48,cat:"Kids'",badge:"New",stock:14,rating:4.8,reviews:36,colors:["#4a5fa3","#8a3d6e","#4a93ad"],sizes:["2-3Y","3-4Y","5-6Y","7-8Y"],img:"dungaree"},
+  {id:12,name:"Woven Leather Belt",price:32,orig:45,cat:"Accessories",badge:"Sale",stock:31,rating:4.4,reviews:189,colors:["#6b4a32","#2c2a27","#5f0f40"],sizes:["S/M","L/XL"],img:"belt"}
+];
+
+function productSVG(type,c1,c2,size=120){
+  c1=c1||'#5f0f40';c2=c2||'#5d7e93';const s=size;
+  const shapes={
+    hoodie:`<path d="M${s*.3} ${s*.35} Q${s*.25} ${s*.3} ${s*.2} ${s*.4} L${s*.175} ${s*.7} L${s*.4} ${s*.7} L${s*.4} ${s*.45} Q${s*.5} ${s*.43} ${s*.6} ${s*.45} L${s*.6} ${s*.7} L${s*.825} ${s*.7} L${s*.8} ${s*.4} Q${s*.75} ${s*.3} ${s*.7} ${s*.35} L${s*.625} ${s*.275} Q${s*.56} ${s*.225} ${s*.5} ${s*.235} Q${s*.44} ${s*.225} ${s*.375} ${s*.275} Z" fill="${c1}" opacity=".9"/><path d="M${s*.375} ${s*.275} Q${s*.44} ${s*.32} ${s*.5} ${s*.32} Q${s*.56} ${s*.32} ${s*.625} ${s*.275} L${s*.6} ${s*.45} Q${s*.5} ${s*.43} ${s*.4} ${s*.45}Z" fill="${c2}" opacity=".85"/>`,
+    dress:`<path d="M${s*.4} ${s*.2} Q${s*.5} ${s*.18} ${s*.6} ${s*.2} L${s*.68} ${s*.4} L${s*.78} ${s*.83} L${s*.22} ${s*.83} L${s*.32} ${s*.4} Z" fill="${c1}" opacity=".9"/><ellipse cx="${s*.5}" cy="${s*.29}" rx="${s*.08}" ry="${s*.075}" fill="${c2}" opacity=".75"/>`,
+    tee:`<path d="M${s*.32} ${s*.27} L${s*.19} ${s*.45} L${s*.32} ${s*.48} L${s*.32} ${s*.78} L${s*.68} ${s*.78} L${s*.68} ${s*.48} L${s*.81} ${s*.45} L${s*.68} ${s*.27} Q${s*.59} ${s*.22} ${s*.5} ${s*.235} Q${s*.41} ${s*.22} ${s*.32} ${s*.27}Z" fill="${c1}" opacity=".9"/><circle cx="${s*.5}" cy="${s*.55}" r="${s*.11}" fill="${c2}" opacity=".5"/>`,
+    joggers:`<path d="M${s*.25} ${s*.27} L${s*.75} ${s*.27} L${s*.725} ${s*.65} L${s*.575} ${s*.8} L${s*.5} ${s*.72} L${s*.425} ${s*.8} L${s*.275} ${s*.65} Z" fill="${c1}" opacity=".9"/><line x1="${s*.25}" y1="${s*.27}" x2="${s*.75}" y2="${s*.27}" stroke="${c2}" stroke-width="${s*.042}" stroke-linecap="round"/>`,
+    jacket:`<path d="M${s*.35} ${s*.27} L${s*.2} ${s*.43} L${s*.28} ${s*.48} L${s*.28} ${s*.78} L${s*.5} ${s*.78} L${s*.5} ${s*.27}Z" fill="${c1}" opacity=".92"/><path d="M${s*.65} ${s*.27} L${s*.8} ${s*.43} L${s*.72} ${s*.48} L${s*.72} ${s*.78} L${s*.5} ${s*.78} L${s*.5} ${s*.27}Z" fill="${c2}" opacity=".88"/>`,
+    blazer:`<path d="M${s*.32} ${s*.22} L${s*.17} ${s*.45} L${s*.27} ${s*.5} L${s*.27} ${s*.83} L${s*.5} ${s*.83} L${s*.5} ${s*.45} L${s*.4} ${s*.4} L${s*.42} ${s*.22}Z" fill="${c1}" opacity=".92"/><path d="M${s*.68} ${s*.22} L${s*.83} ${s*.45} L${s*.73} ${s*.5} L${s*.73} ${s*.83} L${s*.5} ${s*.83} L${s*.5} ${s*.45} L${s*.6} ${s*.4} L${s*.58} ${s*.22}Z" fill="${c1}" opacity=".92"/><path d="M${s*.42} ${s*.22} Q${s*.5} ${s*.3} ${s*.58} ${s*.22} L${s*.55} ${s*.45} Q${s*.5} ${s*.4} ${s*.45} ${s*.45}Z" fill="${c2}" opacity=".75"/>`,
+    shorts:`<path d="M${s*.25} ${s*.27} L${s*.75} ${s*.27} L${s*.72} ${s*.65} L${s*.575} ${s*.8} L${s*.5} ${s*.72} L${s*.425} ${s*.8} L${s*.28} ${s*.65} Z" fill="${c1}" opacity=".9"/><line x1="${s*.25}" y1="${s*.27}" x2="${s*.75}" y2="${s*.27}" stroke="${c2}" stroke-width="${s*.042}" stroke-linecap="round"/>`,
+    cap:`<ellipse cx="${s*.5}" cy="${s*.525}" rx="${s*.33}" ry="${s*.105}" fill="${c2}" opacity=".75"/><path d="M${s*.18} ${s*.525} Q${s*.195} ${s*.32} ${s*.5} ${s*.295} Q${s*.805} ${s*.32} ${s*.82} ${s*.525}Z" fill="${c1}" opacity=".92"/>`,
+    crop:`<path d="M${s*.32} ${s*.3} L${s*.19} ${s*.46} L${s*.32} ${s*.49} L${s*.32} ${s*.66} L${s*.68} ${s*.66} L${s*.68} ${s*.49} L${s*.81} ${s*.46} L${s*.68} ${s*.3} Q${s*.59} ${s*.25} ${s*.5} ${s*.265} Q${s*.41} ${s*.25} ${s*.32} ${s*.3}Z" fill="${c1}" opacity=".9"/>`,
+    trackset:`<path d="M${s*.32} ${s*.2} L${s*.19} ${s*.35} L${s*.3} ${s*.4} L${s*.3} ${s*.58} L${s*.48} ${s*.58} L${s*.48} ${s*.2}Z" fill="${c1}" opacity=".92"/><path d="M${s*.68} ${s*.2} L${s*.81} ${s*.35} L${s*.7} ${s*.4} L${s*.7} ${s*.58} L${s*.52} ${s*.58} L${s*.52} ${s*.2}Z" fill="${c2}" opacity=".88"/><rect x="${s*.3}" y="${s*.61}" width="${s*.18}" height="${s*.28}" rx="${s*.025}" fill="${c1}" opacity=".9"/><rect x="${s*.52}" y="${s*.61}" width="${s*.18}" height="${s*.28}" rx="${s*.025}" fill="${c2}" opacity=".85"/>`,
+    dungaree:`<rect x="${s*.33}" y="${s*.4}" width="${s*.34}" height="${s*.4}" rx="${s*.03}" fill="${c1}" opacity=".9"/><rect x="${s*.375}" y="${s*.22}" width="${s*.1}" height="${s*.2}" rx="${s*.02}" fill="${c1}" opacity=".9"/><rect x="${s*.525}" y="${s*.22}" width="${s*.1}" height="${s*.2}" rx="${s*.02}" fill="${c1}" opacity=".9"/><circle cx="${s*.41}" cy="${s*.25}" r="${s*.026}" fill="${c2}"/><circle cx="${s*.59}" cy="${s*.25}" r="${s*.026}" fill="${c2}"/>`,
+    belt:`<rect x="${s*.1}" y="${s*.44}" width="${s*.8}" height="${s*.12}" rx="${s*.06}" fill="${c1}" opacity=".9"/><rect x="${s*.41}" y="${s*.41}" width="${s*.18}" height="${s*.18}" rx="${s*.025}" fill="${c2}" opacity=".95" stroke="${c1}" stroke-width="1.5"/>`
+  };
+  return`<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}" xmlns="http://www.w3.org/2000/svg"><rect width="${s}" height="${s}" fill="${c1}" rx="${s*.06}" opacity=".08"/>${shapes[type]||''}</svg>`;
+}
+function starsHTML(r,sz=11){let h='<span class="stars">';for(let i=1;i<=5;i++)h+=`<span class="star${i>r?' e':''}" style="font-size:${sz}px">★</span>`;return h+'</span>';}
+function badgeHTML(b){if(!b)return'';const c={Hot:'badge-Hot',New:'badge-New',Sale:'badge-Sale'};return`<span class="badge ${c[b]||''}">${b}</span>`;}
+
+function productCardHTML(p){
+  const wl=(JSON.parse(localStorage.getItem('tc_wishlist')||'[]')).includes(p.id);
+  return`<div class="pcard" onclick="location.href='product.html?id=${p.id}'">
+    ${p.badge?`<div class="pcard-badge">${badgeHTML(p.badge)}</div>`:''}
+    <button class="pcard-wish${wl?' on':''}" onclick="event.stopPropagation();toggleWL(${p.id},this)" title="Wishlist">♥</button>
+    <div class="pcard-thumb">${productSVG(p.img,p.colors[0],p.colors[1],120)}</div>
+    <div class="pcard-body">
+      <div class="pcard-cat">${p.cat}</div>
+      <div class="pcard-name">${p.name}</div>
+      <div class="pcard-stars">${starsHTML(p.rating)}<span class="pcard-rcount">(${p.reviews})</span></div>
+      ${p.stock<=5?`<div class="pcard-stock"><span class="pcard-stock-pulse"></span>Only ${p.stock} left</div>`:''}
+      <div class="pcard-foot">
+        <div><span class="pcard-price">$${p.price}</span>${p.orig>p.price?`<span class="pcard-orig">$${p.orig}</span>`:''}</div>
+        <button class="btn-add" onclick="event.stopPropagation();addCart(${p.id},this)">Add</button>
+      </div>
+    </div>
+  </div>`;
+}
+function skeletonCard(){
+  return `<div class="pcard-skel">
+    <div class="skel skel-thumb"></div>
+    <div class="skel-inner">
+      <div class="skel skel-text" style="width:40%"></div>
+      <div class="skel skel-text" style="width:80%;height:15px"></div>
+      <div class="skel skel-text" style="width:50%"></div>
+      <div class="skel skel-text" style="width:55%;height:16px;margin-top:9px"></div>
+    </div>
+  </div>`;
+}
+
+function getCart(){return JSON.parse(localStorage.getItem('tc_cart')||'[]');}
+function setCart(c){localStorage.setItem('tc_cart',JSON.stringify(c));updateNavCounts();}
+function getWL(){return JSON.parse(localStorage.getItem('tc_wishlist')||'[]');}
+function setWL(w){localStorage.setItem('tc_wishlist',JSON.stringify(w));updateNavCounts();}
+function addCart(id,btn){
+  const p=PRODUCTS.find(x=>x.id===id);if(!p)return;
+  const cart=getCart();const idx=cart.findIndex(i=>i.id===id&&i.size===p.sizes[0]);
+  if(idx>=0)cart[idx].qty++;else cart.push({...p,size:p.sizes[0],color:p.colors[0],qty:1});
+  setCart(cart);showToast(`${p.name} added to cart`);
+  if(btn){btn.classList.add('added');btn.textContent='Added';setTimeout(()=>{btn.classList.remove('added');btn.textContent='Add';},1300);}
+}
+function toggleWL(id,btn){
+  let wl=getWL();
+  if(wl.includes(id)){wl=wl.filter(x=>x!==id);btn.classList.remove('on');showToast('Removed from wishlist','warn');}
+  else{wl.push(id);btn.classList.add('on');showToast('Added to wishlist');}
+  setWL(wl);
+}
+function updateNavCounts(){
+  const cart=getCart(),wl=getWL();
+  const cc=document.getElementById('cart-count'),wc=document.getElementById('wl-count');
+  const cartN=cart.reduce((a,b)=>a+b.qty,0);
+  if(cc){cc.textContent=cartN;cc.style.display=cartN>0?'flex':'none';}
+  if(wc){wc.textContent=wl.length;wc.style.display=wl.length>0?'flex':'none';}
+  const u=JSON.parse(localStorage.getItem('tc_user')||'null');
+  const ub=document.getElementById('nav-user-btn');
+  if(ub&&u)ub.textContent='Hi, '+u.name.split(' ')[0];
+}
+
+function showToast(msg,type='ok'){
+  let t=document.getElementById('tc-toast');
+  if(!t){t=document.createElement('div');t.id='tc-toast';t.className='toast';document.body.appendChild(t);}
+  t.textContent=msg;
+  t.style.background=type==='warn'?'#8a3838':'#3f6b48';
+  t.classList.add('show');
+  clearTimeout(t._t);t._t=setTimeout(()=>{t.classList.remove('show');},2800);
+}
+
+function subscribeNewsletter(){
+  const email=document.getElementById('nl-email').value.trim();
+  if(!email||!email.includes('@')){showToast('Please enter a valid email','warn');return;}
+  document.getElementById('nl-success').style.display='flex';
+  document.getElementById('nl-email').value='';
+  showToast('Subscribed successfully');
+}
+
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+function animateCountUp(el){
+  const target=el.dataset.count?parseInt(el.dataset.count):null;
+  const decimal=el.dataset.decimal?parseFloat(el.dataset.decimal):null;
+  const suffix=el.dataset.suffix||'';
+  const dur=1200;const start=performance.now();
+  function tick(now){
+    const p=Math.min((now-start)/dur,1);
+    const ease=1-Math.pow(1-p,3);
+    if(target!==null){el.textContent=Math.round(target*ease).toLocaleString()+suffix;}
+    else if(decimal!==null){el.textContent=(decimal*ease).toFixed(1)+suffix;}
+    if(p<1)requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+const statObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){animateCountUp(e.target);statObs.unobserve(e.target);}});
+},{threshold:.4});
+document.querySelectorAll('.hero-stat-n').forEach(el=>statObs.observe(el));
+
+const heroWords=["Bold Story","True Self","Daily Mood"];
+let heroWordIdx=0;
+setInterval(()=>{
+  const el=document.getElementById('hero-word');
+  el.style.opacity='0';
+  setTimeout(()=>{
+    heroWordIdx=(heroWordIdx+1)%heroWords.length;
+    el.textContent=heroWords[heroWordIdx];
+    el.style.opacity='1';
+  },350);
+},4200);
+
+document.getElementById('hero-cards').innerHTML=PRODUCTS.slice(0,4).map(p=>`
+  <div class="hcard" onclick="location.href='product.html?id=${p.id}'">
+    <div class="hcard-img">${productSVG(p.img,p.colors[0],p.colors[1],62)}</div>
+    <div class="hcard-name">${p.name}</div>
+    <div class="hcard-price">$${p.price}</div>
+  </div>`).join('');
+
+const CAT_META=[
+  {cat:"Men's",icon:'👔',bg:'rgba(95,15,64,.1)'},
+  {cat:"Women's",icon:'👗',bg:'rgba(138,61,110,.12)'},
+  {cat:"Kids'",icon:'🧸',bg:'rgba(95,148,133,.12)'},
+  {cat:'Accessories',icon:'👜',bg:'rgba(93,126,147,.12)'},
+  {cat:'Unisex',icon:'✨',bg:'rgba(185,127,160,.14)'}
+];
+document.getElementById('cats-grid').innerHTML=CAT_META.map(m=>`
+  <div class="cat-card" onclick="location.href='shop.html?cat=${encodeURIComponent(m.cat)}'">
+    <div class="cat-icon-wrap" style="background:${m.bg}">${m.icon}</div>
+    <div class="cat-name">${m.cat}</div>
+    <div class="cat-arrow" style="color:var(--plum)">Explore →</div>
+  </div>`).join('');
+
+document.getElementById('hot-grid').innerHTML=[1,2,3].map(skeletonCard).join('');
+document.getElementById('new-grid').innerHTML=[1,2,3,4].map(skeletonCard).join('');
+setTimeout(()=>{
+  const hot=PRODUCTS.filter(p=>p.badge==='Hot').slice(0,3);
+  document.getElementById('hot-grid').innerHTML=hot.map(p=>productCardHTML(p)).join('');
+  const newP=PRODUCTS.filter(p=>p.badge==='New').slice(0,4);
+  document.getElementById('new-grid').innerHTML=newP.map(p=>productCardHTML(p)).join('');
+},700);
+
+window.addEventListener('load',()=>{
+  setTimeout(()=>{document.getElementById('page-loader').classList.add('hidden');},400);
+});
+
+updateNavCounts();
+</script>
+</body>
+</html>

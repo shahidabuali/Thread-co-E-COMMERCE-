@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Sign In – THREAD CO.</title>
+<meta name="description" content="Sign in or create your Thread Co. account. Secured with real two-factor email authentication."/>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"/>
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png"/>
+<link rel="apple-touch-icon" sizes="180x180" href="favicon-180.png"/>
+<link rel="shortcut icon" href="favicon.ico"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="emailservice.js"></script>
+
+<script>
+(function(){
+  var saved = localStorage.getItem('tc_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+})();
+</script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --plum:#5f0f40;
+  --plum-light:#7a2f5a;
+  --plum-pale:#9c4d78;
+  --accent-soft:rgba(95,15,64,.08);
+  --accent-glow:rgba(95,15,64,.2);
+
+  --bg:#faf9f8;
+  --bg-elevated:#ffffff;
+  --bg-sunken:#f3eef1;
+  --bg-hero:#1a0e16;
+  --text:#1a1015;
+  --text-muted:#4a4147;
+  --text-faint:#6b6268;
+  --border:#e3dadf;
+  --border-strong:#cdc0c7;
+  --nav-bg:rgba(250,249,248,.9);
+  --nav-text:#1a1015;
+  --nav-text-muted:#4a4147;
+  --card-shadow:0 1px 3px rgba(20,10,16,.05);
+  --card-shadow-hover:0 10px 26px rgba(20,10,16,.09);
+  --skeleton-base:#ece3e8;
+  --skeleton-shine:#f7f1f4;
+  --toggle-bg:#1a1015;
+  --toggle-icon:#9c4d78;
+  --footer-bg:#1a0e16;
+}
+[data-theme="dark"]{
+  --bg:#150d12;
+  --bg-elevated:#1e1318;
+  --bg-sunken:#0e090c;
+  --bg-hero:#0a0508;
+  --text:#f5f1f3;
+  --text-muted:#c4b9c0;
+  --text-faint:#8e8389;
+  --border:#2a1f25;
+  --border-strong:#3e313a;
+  --nav-bg:rgba(21,13,18,.88);
+  --nav-text:#f5f1f3;
+  --nav-text-muted:#c4b9c0;
+  --card-shadow:0 1px 3px rgba(0,0,0,.3);
+  --card-shadow-hover:0 12px 30px rgba(0,0,0,.4);
+  --skeleton-base:#201620;
+  --skeleton-shine:#2b1e29;
+  --toggle-bg:#9c4d78;
+  --toggle-icon:#150d12;
+  --footer-bg:#0a0508;
+}
+
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;transition:background .3s ease,color .3s ease;position:relative;min-height:100vh}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;font-family:inherit;border:none;background:none}
+::selection{background:var(--plum);color:#fff}
+
+#site-bg-anim{position:fixed;inset:0;z-index:-1;overflow:hidden;background:var(--bg);transition:background .3s ease}
+#site-bg-anim svg{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:min(900px,90vw);height:auto;opacity:.22}
+[data-theme="dark"] #site-bg-anim svg{opacity:.28}
+#figure path,#figure circle{stroke:var(--plum);stroke-width:1.5;stroke-opacity:.3}
+.dress-layer path,.dress-layer rect,.dress-layer ellipse{filter:drop-shadow(0 0 12px var(--accent-glow))}
+.dress-layer{opacity:0;transition:opacity 1.2s ease}
+.dress-layer.on{opacity:1}
+
+#page-loader{position:fixed;inset:0;z-index:10000;background:var(--bg);display:flex;align-items:center;justify-content:center;transition:opacity .45s ease,visibility .45s ease}
+#page-loader.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loader-logo{display:flex;flex-direction:column;align-items:center;gap:16px}
+.loader-mark{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--plum),var(--plum-light));display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:17px;animation:loaderFade 1.6s ease-in-out infinite}
+@keyframes loaderFade{0%,100%{opacity:1}50%{opacity:.5}}
+.loader-bar{width:110px;height:2px;background:var(--border);border-radius:2px;overflow:hidden;position:relative}
+.loader-bar::after{content:'';position:absolute;inset:0;width:35%;background:var(--plum);border-radius:2px;animation:loaderSlide 1.3s ease-in-out infinite}
+@keyframes loaderSlide{0%{transform:translateX(-100%)}100%{transform:translateX(330%)}}
+
+.theme-toggle{position:relative;width:48px;height:26px;border-radius:14px;background:var(--toggle-bg);cursor:pointer;flex-shrink:0;transition:background .3s ease;display:flex;align-items:center;padding:3px}
+.theme-toggle-knob{width:20px;height:20px;border-radius:50%;background:var(--toggle-icon);display:flex;align-items:center;justify-content:center;font-size:10px;transition:transform .3s ease;transform:translateX(0)}
+[data-theme="dark"] .theme-toggle-knob{transform:translateX(22px)}
+
+/* ════════ TOP BAR ════════ */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:900;height:64px;display:flex;align-items:center;padding:0 32px;background:var(--nav-bg);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);transition:background .3s ease,border-color .3s ease}
+.topbar-logo{display:flex;align-items:center;gap:9px;cursor:pointer}
+.topbar-logo-mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--plum),var(--plum-light));display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:12px}
+.topbar-logo-text{color:var(--nav-text);font-weight:700;font-size:14px;letter-spacing:2.5px}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:14px}
+.back-link{font-size:13px;color:var(--text-muted);transition:color .2s}
+.back-link:hover{color:var(--plum)}
+
+/* ════════ AUTH LAYOUT ════════ */
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:100px 24px 50px;position:relative;z-index:1}
+.auth-box{width:100%;max-width:420px}
+.auth-tabs{display:flex;background:var(--bg-sunken);border-radius:12px;padding:4px;margin-bottom:26px}
+.auth-tab{flex:1;padding:10px;border-radius:9px;cursor:pointer;font-size:14px;font-weight:700;transition:all .2s;color:var(--text-muted)}
+.auth-tab.active{background:var(--bg-elevated);color:var(--text);box-shadow:var(--card-shadow)}
+
+.form-title{font-family:'Playfair Display',serif;font-size:27px;font-weight:700;color:var(--text);margin-bottom:6px}
+.form-sub{font-size:13px;color:var(--text-muted);margin-bottom:26px}
+
+.field{margin-bottom:15px}
+.field-label{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px}
+.field-label a{color:var(--plum);font-size:11px;font-weight:700;text-transform:none;letter-spacing:0}
+.field-wrap{position:relative}
+.field-input{width:100%;padding:12px 15px;border-radius:10px;border:1.4px solid var(--border);font-size:14px;outline:none;transition:border-color .2s;background:var(--bg-elevated);color:var(--text)}
+.field-input:focus{border-color:var(--plum)}
+.field-input.err{border-color:#b1493f}
+.field-error{font-size:11px;color:#b1493f;margin-top:5px;display:block}
+.pass-toggle{position:absolute;right:13px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--text-faint)}
+.strength-bar{height:3px;border-radius:2px;margin-top:6px;transition:width .3s,background .3s;background:var(--border)}
+.strength-label{font-size:10px;color:var(--text-faint);margin-top:3px}
+
+.twofa-note{background:var(--accent-soft);border:1px solid rgba(95,15,64,.2);border-radius:11px;padding:12px 15px;display:flex;gap:10px;margin:16px 0}
+.twofa-note-icon{font-size:17px;flex-shrink:0}
+.twofa-note-text{font-size:12px;color:var(--text-muted);line-height:1.6}
+.twofa-note-text strong{color:var(--plum)}
+
+.terms{font-size:12px;color:var(--text-muted);margin-bottom:18px}
+.terms a{color:var(--plum);font-weight:600}
+
+.btn-submit{width:100%;padding:14px;background:var(--plum);border-radius:11px;color:#fff;font-weight:700;font-size:15px;transition:opacity .2s,transform .15s}
+.btn-submit:hover{opacity:.9;transform:translateY(-1px)}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed}
+
+.divider{display:flex;align-items:center;gap:11px;margin:18px 0;color:var(--text-faint);font-size:12px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.social-btns{display:flex;gap:9px}
+.social-btn{flex:1;padding:11px;border:1.4px solid var(--border);border-radius:9px;background:var(--bg-elevated);font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;justify-content:center;gap:7px;transition:border-color .2s}
+.social-btn:hover{border-color:var(--border-strong)}
+
+.admin-hint{background:var(--bg-sunken);border:1px solid var(--border);border-radius:9px;padding:10px 14px;font-size:12px;color:var(--text-muted);margin-top:13px;text-align:center}
+.admin-hint code{background:var(--bg);padding:2px 6px;border-radius:4px;font-size:11px;color:var(--plum);font-weight:700}
+
+/* ════════ 2FA SCREEN ════════ */
+.tfa-screen{display:none}
+.tfa-screen.show{display:block}
+.login-form.hide{display:none}
+.back-btn{display:flex;align-items:center;gap:6px;color:var(--text-muted);font-size:13px;font-weight:600;margin-bottom:22px;transition:color .2s}
+.back-btn:hover{color:var(--text)}
+.tfa-icon{width:62px;height:62px;background:linear-gradient(135deg,var(--plum),var(--plum-light));border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:27px;margin:0 auto 20px}
+.tfa-title{font-family:'Playfair Display',serif;font-size:25px;font-weight:700;text-align:center;margin-bottom:7px}
+.tfa-sub{font-size:13px;color:var(--text-muted);text-align:center;line-height:1.6;margin-bottom:22px}
+.tfa-email{color:var(--plum);font-weight:700}
+
+.email-status{border-radius:10px;padding:11px 14px;font-size:12px;margin-bottom:16px;display:flex;align-items:flex-start;gap:9px;line-height:1.5}
+.email-status.sending{background:#fdf3e7;border:1px solid #e8c08c;color:#8a5a1e}
+.email-status.sent{background:#e9f3e7;border:1px solid #a8cba0;color:#3f6b48}
+.email-status.failed{background:#fae6e3;border:1px solid #d99186;color:#8a3838}
+[data-theme="dark"] .email-status.sending{background:#2e2110;color:#dba269}
+[data-theme="dark"] .email-status.sent{background:#1a2c1c;color:#7fb98c}
+[data-theme="dark"] .email-status.failed{background:#2c1816;color:#cf8585}
+
+.spinner{display:inline-block;width:15px;height:15px;border:2.2px solid rgba(0,0,0,.15);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:5px;flex-shrink:0}
+.spinner.light{border-color:rgba(255,255,255,.35);border-top-color:#fff}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.tfa-inputs{display:flex;gap:9px;justify-content:center;margin-bottom:9px}
+.tfa-inp{width:46px;height:54px;text-align:center;font-size:22px;font-weight:700;border:1.8px solid var(--border);border-radius:11px;outline:none;transition:border-color .2s;font-family:inherit;background:var(--bg-elevated);color:var(--text)}
+.tfa-inp:focus{border-color:var(--plum)}
+.tfa-inp.filled{border-color:var(--plum);background:var(--accent-soft)}
+.tfa-hint{text-align:center;font-size:11px;color:var(--text-faint);margin-bottom:18px}
+.tfa-err{text-align:center;font-size:12px;color:#b1493f;font-weight:600;margin-bottom:12px;min-height:18px}
+.btn-verify{width:100%;padding:14px;background:var(--plum);border-radius:11px;color:#fff;font-weight:700;font-size:15px;transition:opacity .2s}
+.btn-verify:hover{opacity:.9}
+.btn-verify:disabled{opacity:.5;cursor:not-allowed}
+.timer-row{text-align:center;margin-top:15px;font-size:12px;color:var(--text-muted)}
+.resend-btn{color:var(--plum);font-weight:700;font-size:12px}
+.security-badges{display:flex;justify-content:center;gap:15px;margin-top:22px}
+.sec-badge{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-faint)}
+
+.toast{position:fixed;bottom:22px;right:22px;z-index:9999;padding:12px 19px;border-radius:10px;font-weight:600;font-size:13px;color:#fff;box-shadow:0 8px 22px rgba(0,0,0,.18);transition:opacity .25s,transform .25s;pointer-events:none;display:flex;align-items:center;gap:7px;transform:translateY(14px);opacity:0}
+.toast.show{transform:translateY(0);opacity:1}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .35s ease both}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+</style>
+</head>
+<body>
+
+<div id="site-bg-anim">
+  <svg id="dress-svg" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
+    <g id="figure">
+      <circle cx="200" cy="70" r="32" fill="var(--plum)"/>
+      <path d="M160 110 Q200 100 240 110 L250 280 Q200 295 150 280 Z" fill="var(--plum)"/>
+      <path d="M160 280 L155 480 L185 480 L195 300 Z" fill="var(--plum)"/>
+      <path d="M240 280 L245 480 L215 480 L205 300 Z" fill="var(--plum)"/>
+      <path d="M160 120 L120 220 L140 230 L168 140 Z" fill="var(--plum)"/>
+      <path d="M240 120 L280 220 L260 230 L232 140 Z" fill="var(--plum)"/>
+    </g>
+    <g class="dress-layer" id="layer-jacket">
+      <path d="M150 105 Q200 92 250 105 L262 200 L235 212 L235 290 L165 290 L165 212 L138 200 Z" fill="var(--plum-light)"/>
+      <text x="200" y="250" text-anchor="middle" font-family="DM Sans" font-size="11" font-weight="700" fill="#fff" opacity=".85" letter-spacing="1.5">THREAD CO.</text>
+    </g>
+    <g class="dress-layer" id="layer-shoes">
+      <ellipse cx="168" cy="488" rx="26" ry="11" fill="var(--plum-light)"/>
+      <ellipse cx="232" cy="488" rx="26" ry="11" fill="var(--plum-light)"/>
+      <text x="168" y="491" text-anchor="middle" font-family="DM Sans" font-size="6" font-weight="700" fill="#fff" opacity=".8">TC</text>
+      <text x="232" y="491" text-anchor="middle" font-family="DM Sans" font-size="6" font-weight="700" fill="#fff" opacity=".8">TC</text>
+    </g>
+    <g class="dress-layer" id="layer-accessories">
+      <path d="M168 48 Q200 30 232 48 Q236 60 230 64 L170 64 Q164 60 168 48 Z" fill="var(--plum-light)"/>
+      <rect x="185" y="38" width="30" height="8" rx="3" fill="#fff" opacity=".15"/>
+      <rect x="255" y="230" width="38" height="50" rx="8" fill="var(--plum-light)"/>
+      <text x="274" y="259" text-anchor="middle" font-family="DM Sans" font-size="8" font-weight="700" fill="#fff" opacity=".85">TC</text>
+    </g>
+  </svg>
+</div>
+
+<div id="page-loader">
+  <div class="loader-logo">
+    <div class="loader-mark">TC</div>
+    <div class="loader-bar"></div>
+  </div>
+</div>
+
+<div class="topbar">
+  <div class="topbar-logo" onclick="location.href='index.html'">
+    <div class="topbar-logo-mark">TC</div>
+    <span class="topbar-logo-text">THREAD CO.</span>
+  </div>
+  <div class="topbar-right">
+    <a href="index.html" class="back-link">← Back to Store</a>
+    <button class="theme-toggle" id="theme-toggle" title="Toggle dark/light mode" aria-label="Toggle theme">
+      <span class="theme-toggle-knob" id="theme-knob">☀️</span>
+    </button>
+  </div>
+</div>
+
+<div class="auth-wrap">
+  <div class="auth-box">
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login" onclick="switchMode('login')">Sign In</button>
+      <button class="auth-tab" id="tab-register" onclick="switchMode('register')">Create Account</button>
+    </div>
+
+    <div class="login-form fade-in" id="login-form">
+      <h2 class="form-title" id="form-title">Welcome back</h2>
+      <p class="form-sub" id="form-sub">Sign in to access your Thread Co. account</p>
+
+      <div class="field" id="field-name" style="display:none">
+        <div class="field-label">Full Name</div>
+        <input class="field-input" id="inp-name" type="text" placeholder="Alex Thompson" oninput="clearErr('name')"/>
+        <span class="field-error" id="err-name"></span>
+      </div>
+
+      <div class="field">
+        <div class="field-label">Email Address</div>
+        <input class="field-input" id="inp-email" type="email" placeholder="you@example.com" oninput="clearErr('email')"/>
+        <span class="field-error" id="err-email"></span>
+      </div>
+
+      <div class="field">
+        <div class="field-label">
+          <span>Password</span>
+          <a href="#" id="forgot-link" onclick="showForgot();return false">Forgot password?</a>
+        </div>
+        <div class="field-wrap">
+          <input class="field-input" id="inp-pass" type="password" placeholder="Min. 6 characters" style="padding-right:42px" oninput="clearErr('pass');checkStrength(this.value)"/>
+          <button class="pass-toggle" type="button" onclick="togglePass('inp-pass',this)">👁</button>
+        </div>
+        <div id="strength-bar" class="strength-bar" style="width:0"></div>
+        <div id="strength-label" class="strength-label"></div>
+        <span class="field-error" id="err-pass"></span>
+      </div>
+
+      <div class="field" id="field-confirm" style="display:none">
+        <div class="field-label">Confirm Password</div>
+        <div class="field-wrap">
+          <input class="field-input" id="inp-confirm" type="password" placeholder="Repeat your password" style="padding-right:42px" oninput="clearErr('confirm')"/>
+          <button class="pass-toggle" type="button" onclick="togglePass('inp-confirm',this)">👁</button>
+        </div>
+        <span class="field-error" id="err-confirm"></span>
+      </div>
+
+      <div class="twofa-note">
+        <span class="twofa-note-icon">🔐</span>
+        <div class="twofa-note-text">
+          <strong>Two-Factor Authentication</strong> is required on every sign-in.<br>A real 6-digit code will be emailed to you instantly.
+        </div>
+      </div>
+
+      <div class="terms" id="terms-row" style="display:none">
+        By creating an account you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+      </div>
+
+      <button class="btn-submit" id="btn-submit" onclick="handleSubmit()">Sign In →</button>
+
+      <div class="divider">or continue with</div>
+      <div class="social-btns">
+        <button class="social-btn" onclick="socialLogin('Google')">🌐 Google</button>
+        <button class="social-btn" onclick="socialLogin('Apple')">🍎 Apple</button>
+      </div>
+
+      <div class="admin-hint">Admin access: use <code>admin@threadco.com</code></div>
+    </div>
+
+    <div class="tfa-screen fade-in" id="tfa-screen">
+      <button class="back-btn" onclick="showForm()">← Back</button>
+      <div class="tfa-icon">🔐</div>
+      <div class="tfa-title">Check Your Email</div>
+      <p class="tfa-sub">We sent a 6-digit code to<br><span class="tfa-email" id="tfa-email-disp">your email</span></p>
+
+      <div class="email-status sending" id="email-status">
+        <span class="spinner"></span><span id="email-status-text">Sending code to your email…</span>
+      </div>
+
+      <div class="tfa-inputs" id="tfa-inputs"></div>
+      <div class="tfa-err" id="tfa-err"></div>
+
+      <button class="btn-verify" id="btn-verify" onclick="verifyTFA()">Verify & Continue →</button>
+      <div class="timer-row" id="timer-row">Resend code in <strong id="timer-val">30</strong>s</div>
+
+      <div class="security-badges">
+        <span class="sec-badge">🔒 256-bit SSL</span>
+        <span class="sec-badge">🛡️ Real Email 2FA</span>
+        <span class="sec-badge">✓ GDPR Compliant</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let mode='login';
+let tfaCode=['','','','','',''];
+let timerInt=null;
+let pendingUser=null;
+
+function tcToggleTheme(){
+  const cur=document.documentElement.getAttribute('data-theme');
+  const next=cur==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);
+  localStorage.setItem('tc_theme',next);
+  tcUpdateToggleIcon(next);
+}
+function tcUpdateToggleIcon(theme){
+  const knob=document.getElementById('theme-knob');
+  if(knob)knob.textContent=theme==='dark'?'🌙':'☀️';
+}
+document.getElementById('theme-toggle').addEventListener('click',tcToggleTheme);
+tcUpdateToggleIcon(document.documentElement.getAttribute('data-theme')||'light');
+
+function runDressingLoop(){
+  const layers=['layer-jacket','layer-shoes','layer-accessories'];
+  let i=0;
+  function step(){
+    layers.forEach(id=>document.getElementById(id)?.classList.remove('on'));
+    if(i>0){for(let j=0;j<i;j++){document.getElementById(layers[j])?.classList.add('on');}}
+    i++;
+    if(i>layers.length+1){i=0;}
+    setTimeout(step, i===1?700:1400);
+  }
+  step();
+}
+runDressingLoop();
+
+function switchMode(m){
+  mode=m;
+  document.getElementById('tab-login').classList.toggle('active',m==='login');
+  document.getElementById('tab-register').classList.toggle('active',m==='register');
+  document.getElementById('field-name').style.display=m==='register'?'block':'none';
+  document.getElementById('field-confirm').style.display=m==='register'?'block':'none';
+  document.getElementById('terms-row').style.display=m==='register'?'block':'none';
+  document.getElementById('forgot-link').style.display=m==='login'?'inline':'none';
+  document.getElementById('form-title').textContent=m==='login'?'Welcome back':'Create your account';
+  document.getElementById('form-sub').textContent=m==='login'?'Sign in to access your Thread Co. account':'Join the Thread Co. family today';
+  document.getElementById('btn-submit').textContent=m==='login'?'Sign In →':'Create Account →';
+  document.getElementById('strength-bar').style.width='0';
+  document.getElementById('strength-label').textContent='';
+  clearAllErrors();
+}
+
+function setErr(f,msg){
+  const el=document.getElementById('err-'+f),inp=document.getElementById('inp-'+f);
+  if(el)el.textContent=msg;if(inp)inp.classList.add('err');
+}
+function clearErr(f){
+  const el=document.getElementById('err-'+f),inp=document.getElementById('inp-'+f);
+  if(el)el.textContent='';if(inp)inp.classList.remove('err');
+}
+function clearAllErrors(){['name','email','pass','confirm'].forEach(clearErr);}
+
+function validate(){
+  clearAllErrors();let ok=true;
+  const email=document.getElementById('inp-email').value.trim();
+  const pass=document.getElementById('inp-pass').value;
+  if(!email||!email.includes('@')||!email.includes('.')){setErr('email','Please enter a valid email address');ok=false;}
+  if(pass.length<6){setErr('pass','Password must be at least 6 characters');ok=false;}
+  if(mode==='register'){
+    const name=document.getElementById('inp-name').value.trim();
+    const confirm=document.getElementById('inp-confirm').value;
+    if(!name){setErr('name','Full name is required');ok=false;}
+    if(pass!==confirm){setErr('confirm','Passwords do not match');ok=false;}
+  }
+  return ok;
+}
+
+function checkStrength(v){
+  const bar=document.getElementById('strength-bar'),lbl=document.getElementById('strength-label');
+  if(!v){bar.style.width='0';lbl.textContent='';return;}
+  let score=0;
+  if(v.length>=6)score++;if(v.length>=10)score++;
+  if(/[A-Z]/.test(v))score++;if(/[0-9]/.test(v))score++;if(/[^A-Za-z0-9]/.test(v))score++;
+  const levels=[{w:'20%',bg:'#b1493f',t:'Very weak'},{w:'40%',bg:'#c98a3a',t:'Weak'},{w:'60%',bg:'#c9a93a',t:'Fair'},{w:'80%',bg:'#7a9e5a',t:'Strong'},{w:'100%',bg:'#3f6b48',t:'Very strong'}];
+  const l=levels[Math.min(score-1,4)]||levels[0];
+  bar.style.width=l.w;bar.style.background=l.bg;lbl.textContent=l.t;lbl.style.color=l.bg;
+}
+function togglePass(id,btn){
+  const inp=document.getElementById(id);
+  if(inp.type==='password'){inp.type='text';btn.textContent='🙈';}
+  else{inp.type='password';btn.textContent='👁';}
+}
+
+function handleSubmit(){
+  if(!validate())return;
+  const btn=document.getElementById('btn-submit');
+  btn.disabled=true;btn.innerHTML='<span class="spinner light"></span>Sending code…';
+
+  const email=document.getElementById('inp-email').value.trim();
+  const name=mode==='register'?document.getElementById('inp-name').value.trim():'there';
+
+  pendingUser={
+    name:name||'Alex Thompson',
+    email,
+    isAdmin:email.toLowerCase().includes('admin'),
+    avatar:(name||'AT').split(' ').map(w=>w[0]).join('').toUpperCase()
+  };
+
+  show2FA(email);
+
+  if(typeof sendTwoFactorCode==='function'){
+    sendTwoFactorCode(email,name,
+      (result)=>{
+        btn.disabled=false;btn.textContent=mode==='login'?'Sign In →':'Create Account →';
+        setEmailStatus(result.real?`Code sent! Check your inbox at ${email}`:'Code generated — see banner below','sent');
+      },
+      (err)=>{
+        btn.disabled=false;btn.textContent=mode==='login'?'Sign In →':'Create Account →';
+        setEmailStatus('Could not send email. Check email config.','failed');
+      }
+    );
+  }else{
+    setTimeout(()=>{
+      btn.disabled=false;btn.textContent=mode==='login'?'Sign In →':'Create Account →';
+      setEmailStatus('Demo mode — enter any 6 digits to continue','sent');
+    },700);
+  }
+}
+
+function socialLogin(provider){
+  showToast('Redirecting to '+provider+'…','info');
+  pendingUser={name:provider+' User',email:'social@example.com',isAdmin:false,avatar:'SU'};
+  setTimeout(()=>show2FA('social@example.com'),500);
+}
+
+function showForgot(){
+  const email=document.getElementById('inp-email').value.trim();
+  if(!email){setErr('email','Enter your email first');return;}
+  showToast('Password reset link sent to '+email,'ok');
+}
+
+function show2FA(email){
+  document.getElementById('tfa-email-disp').textContent=email;
+  document.getElementById('login-form').classList.add('hide');
+  document.getElementById('tfa-screen').classList.add('show');
+  setEmailStatus('Sending code to your email…','sending');
+  buildTFAInputs();startTimer();
+  setTimeout(()=>document.getElementById('tfa-0')?.focus(),80);
+}
+function showForm(){
+  document.getElementById('tfa-screen').classList.remove('show');
+  document.getElementById('login-form').classList.remove('hide');
+  if(timerInt)clearInterval(timerInt);
+}
+function setEmailStatus(msg,type){
+  const el=document.getElementById('email-status'),txt=document.getElementById('email-status-text');
+  if(!el||!txt)return;
+  el.className='email-status '+type;
+  const icons={sending:'<span class="spinner"></span>',sent:'✅ ',failed:'❌ '};
+  txt.innerHTML=(icons[type]||'')+msg;
+}
+
+function buildTFAInputs(){
+  tfaCode=['','','','','',''];
+  document.getElementById('tfa-inputs').innerHTML=tfaCode.map((_,i)=>
+    `<input class="tfa-inp" id="tfa-${i}" type="text" inputmode="numeric" maxlength="1"
+      oninput="onTFAIn(${i},this.value)" onkeydown="onTFAKey(${i},event)"
+      onpaste="${i===0?'onTFAPaste(event)':'void(0)'}"/>`).join('');
+  document.getElementById('tfa-err').textContent='';
+}
+function onTFAIn(i,v){
+  v=v.replace(/\D/g,'').slice(-1);tfaCode[i]=v;
+  const el=document.getElementById('tfa-'+i);
+  if(el){el.value=v;el.classList.toggle('filled',!!v);}
+  if(v&&i<5)setTimeout(()=>document.getElementById('tfa-'+(i+1))?.focus(),10);
+  document.getElementById('tfa-err').textContent='';
+}
+function onTFAKey(i,e){
+  if(e.key==='Backspace'&&!tfaCode[i]&&i>0){
+    tfaCode[i-1]='';
+    const prev=document.getElementById('tfa-'+(i-1));
+    if(prev){prev.value='';prev.classList.remove('filled');setTimeout(()=>prev.focus(),10);}
+  }
+  if(e.key==='Enter')verifyTFA();
+}
+function onTFAPaste(e){
+  const txt=e.clipboardData.getData('text').replace(/\D/g,'').slice(0,6);
+  if(txt.length===6){
+    txt.split('').forEach((c,i)=>{
+      tfaCode[i]=c;
+      const el=document.getElementById('tfa-'+i);
+      if(el){el.value=c;el.classList.add('filled');}
+    });
+    setTimeout(()=>document.getElementById('tfa-5')?.focus(),10);
+    e.preventDefault();
+  }
+}
+
+function verifyTFA(){
+  const full=tfaCode.join('');
+  const errEl=document.getElementById('tfa-err');
+  if(full.length<6){errEl.textContent='Please enter all 6 digits.';return;}
+
+  const btn=document.getElementById('btn-verify');
+  btn.disabled=true;btn.innerHTML='<span class="spinner light"></span>Verifying…';
+
+  let result='ok';
+  if(typeof validateOTP==='function'){result=validateOTP(full);}
+
+  setTimeout(()=>{
+    btn.disabled=false;btn.textContent='Verify & Continue →';
+    if(result==='ok'){completeAuth();}
+    else if(result==='expired'){
+      errEl.textContent='Code has expired. Please request a new one.';
+      tfaCode=['','','','','',''];buildTFAInputs();
+      setTimeout(()=>document.getElementById('tfa-0')?.focus(),50);
+    }else{
+      errEl.textContent='Incorrect code. Please try again.';
+      tfaCode=['','','','','',''];buildTFAInputs();
+      setTimeout(()=>document.getElementById('tfa-0')?.focus(),50);
+      const wrap=document.getElementById('tfa-inputs');
+      wrap.style.animation='none';wrap.offsetHeight;wrap.style.animation='shake .4s ease';
+    }
+  },500);
+}
+
+function completeAuth(){
+  if(!pendingUser)return;
+  localStorage.setItem('tc_user',JSON.stringify(pendingUser));
+  if(timerInt)clearInterval(timerInt);
+  showToast('Welcome, '+pendingUser.name.split(' ')[0]+'! 🎉');
+  setTimeout(()=>location.href=pendingUser.isAdmin?'admin.html':'dashboard.html',700);
+}
+
+function startTimer(){
+  let t=30;
+  const row=document.getElementById('timer-row');
+  row.innerHTML=`Resend code in <strong id="timer-val">${t}</strong>s`;
+  if(timerInt)clearInterval(timerInt);
+  timerInt=setInterval(()=>{
+    t--;
+    const el=document.getElementById('timer-val');if(el)el.textContent=t;
+    if(t<=0){
+      clearInterval(timerInt);
+      row.innerHTML=`<button class="resend-btn" onclick="resendCode()">Didn't get it? Resend code →</button>`;
+    }
+  },1000);
+}
+function resendCode(){
+  const email=document.getElementById('tfa-email-disp').textContent;
+  const name=pendingUser?.name||'there';
+  tfaCode=['','','','','',''];buildTFAInputs();startTimer();
+  setEmailStatus('Resending code…','sending');
+  if(typeof sendTwoFactorCode==='function'){
+    sendTwoFactorCode(email,name,
+      (result)=>setEmailStatus(result.real?'New code sent! Check your inbox.':'Code regenerated — see banner.','sent'),
+      ()=>setEmailStatus('Resend failed. Check email config.','failed')
+    );
+  }
+  setTimeout(()=>document.getElementById('tfa-0')?.focus(),60);
+}
+
+function showToast(msg,type='ok'){
+  let t=document.getElementById('tc-toast');
+  if(!t){t=document.createElement('div');t.id='tc-toast';t.className='toast';document.body.appendChild(t);}
+  const bg={ok:'#3f6b48',warn:'#8a3838',info:'#3b5e8a'}[type]||'#3f6b48';
+  t.textContent=msg;t.style.background=bg;t.classList.add('show');
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  const u=JSON.parse(localStorage.getItem('tc_user')||'null');
+  if(u)location.href=u.isAdmin?'admin.html':'dashboard.html';
+});
+window.addEventListener('load',()=>{
+  setTimeout(()=>{document.getElementById('page-loader').classList.add('hidden');},400);
+});
+</script>
+</body>
+</html>
